@@ -2,11 +2,9 @@
 using IdentityAPI.Security;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace IdentityAPI.Services
 {
@@ -16,8 +14,8 @@ namespace IdentityAPI.Services
 
         public UserService(IConfiguration configuration)
         {
-            var client = new MongoClient(configuration.GetConnectionString("HotelDb"));
-            var database = client.GetDatabase("HotelDb");
+            var client = new MongoClient(configuration.GetConnectionString("UsersDb"));
+            var database = client.GetDatabase("UsersDb");
             users = database.GetCollection<User>("Users");
         }
 
@@ -30,7 +28,7 @@ namespace IdentityAPI.Services
                 string hash = Hash.GetHash(sha256Hash, user.Password);
                 user.Password = hash;
             }
-
+            user.Role = Role.User;
             users.InsertOne(user);
             return user;
         }

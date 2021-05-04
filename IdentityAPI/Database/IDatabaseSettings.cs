@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 
 namespace IdentityAPI.Database
 {
-    public class DatabaseSettings : IDatabaseSettings
+    interface IDatabaseSettings
     {
         public string CollectionName { get; set; }
         public string CollectionString { get; set; }
         public string DatabaseName { get; set; }
+
     }
 }

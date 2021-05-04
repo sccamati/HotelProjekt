@@ -16,6 +16,12 @@ namespace IdentityAPI.Models
         [BsonElement("Password")]
         public string Password { get; set; }
         [BsonElement("Role")]
-        public string Role { get; set; }
+        public Role Role { get; set; }
+    }
+
+    public enum Role{
+        Admin,
+        User,
+        Owner
     }
 }
