@@ -21,34 +21,34 @@ namespace HotelAPI.Controllers
 
         //Hotels CRUD
 
-        [HttpPost("/create")]
-        public ActionResult<Hotel> CreateHotel(Hotel hotel)
+        [HttpPost]
+        public ActionResult<Hotel> Create(Hotel hotel)
         {
             hotelService.CreateHotel(hotel);
             return Json(hotel);
         }
 
-        [HttpPost("/update/{id:length(24)}")]
-        public ActionResult<Hotel> UpdateHotel(string id, Hotel hotel)
+        [HttpPost("{id:length(24)}")]
+        public ActionResult<Hotel> Update(string id, Hotel hotel)
         {
             hotelService.UpdateHotel(id, hotel);
             return Json(hotel);
         }
 
-        [HttpGet("/delete/{id:length(24)}")]
+        [HttpDelete("{id:length(24)}")]
         public ActionResult<List<Hotel>> DeleteHotel(string id)
         {
             return hotelService.DeleteHotel(id);
         }
 
-        [HttpGet("/get/{id:length(24)}")]
-        public ActionResult<List<Hotel>> GetHotel(string id)
+        [HttpGet("{id:length(24)}")]
+        public ActionResult<Hotel> GetHotel(string id)
         {
             var hotel = hotelService.GetHotel(id);
             return Json(hotel);
         }
 
-        [HttpGet("/all")]
+        [HttpGet]
         public ActionResult<List<Hotel>> GetHotels()
         {
             return hotelService.GetHotels();
@@ -76,7 +76,7 @@ namespace HotelAPI.Controllers
             return Json(room);
         }*/
 
-        [HttpGet("room/delete/{id:length(24)}")]
+        [HttpPost("room/delete/{id:length(24)}")]
         public ActionResult<Hotel> DeleteRoom(string id, int number)
         {
             var hotel = hotelService.DeleteRoom(id, number);

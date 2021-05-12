@@ -11,29 +11,36 @@ namespace ReservationAPI.Services
 {
     public class ReservationService
     {
-        private readonly IMongoCollection<Reservation> reservations;
+        private readonly IMongoCollection<Reservation> _reservations;
 
         public ReservationService(IConfiguration configuration)
         {
             var client = new MongoClient(configuration.GetConnectionString("ReservationDb"));
             var database = client.GetDatabase("ReservationDb");
-            reservations = database.GetCollection<Reservation>("Reservations");
+
+            _reservations = database.GetCollection<Reservation>("Reservations");
         }
 
-        public List<Reservation> GetReservations() => reservations.Find(reservations => true).ToList();
-        public Reservation GetReservation(string id) => reservations.Find<Reservation>(reservations => reservations.Id == id).FirstOrDefault();
-        public List<Reservation> GetUserReservations(string userId) => reservations.Find(reservations => reservations.UserId == userId).ToList();
-        public List<Reservation> GetOwnerReservations(string hotelId) => reservations.Find(reservations => reservations.HotelId == hotelId).ToList();
+        public List<Reservation> GetReservations() => _reservations.Find(reservations => true).ToList();
+        public Reservation GetReservation(string id) => _reservations.Find<Reservation>(reservations => reservations.Id == id).FirstOrDefault();
+        public List<Reservation> GetUserReservations(string userId) => _reservations.Find(reservations => reservations.UserId == userId).ToList();
+        public List<Reservation> GetOwnerReservations(string hotelId) => _reservations.Find(reservations => reservations.HotelId == hotelId).ToList();
 
         public Reservation Create(Reservation reservation)
         {
-            reservations.InsertOne(reservation);
+            _reservations.InsertOne(reservation);
             return reservation;
         }
 
-        public void DeleteReservation(string id)
+        public ReplaceOneResult Update(string id, Reservation reservation)
         {
-            reservations.DeleteOne(r => r.Id == id);
+            return _reservations.ReplaceOne(r => r.Id == id, reservation);
         }
+
+        public DeleteResult Delete(string id)
+        {
+            return _reservations.DeleteOne(r => r.Id == id);
+        }
+
     }
 }

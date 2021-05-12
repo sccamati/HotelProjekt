@@ -10,17 +10,15 @@ namespace IdentityAPI.Services
 {
     public class UserService
     {
-        private readonly IMongoCollection<User> users;
+        private readonly IMongoCollection<User> _users;
 
         public UserService(IConfiguration configuration)
         {
             var client = new MongoClient(configuration.GetConnectionString("UsersDb"));
             var database = client.GetDatabase("UsersDb");
-            users = database.GetCollection<User>("Users");
+            _users = database.GetCollection<User>("Users");
         }
 
-        public List<User> GetUsers() => users.Find(user => true).ToList();
-        public User GetUser(string id) => users.Find<User>(user => user.Id == id).FirstOrDefault();
         public User Create(User user)
         {
             using (SHA256 sha256Hash = SHA256.Create())
@@ -29,8 +27,23 @@ namespace IdentityAPI.Services
                 user.Password = hash;
             }
             user.Role = Role.User;
-            users.InsertOne(user);
+            _users.InsertOne(user);
             return user;
         }
+
+        public ReplaceOneResult Update(string id, User user)
+        {
+            return _users.ReplaceOne(u => u.Id == id, user);
+        }
+
+        public DeleteResult Delete(string id)
+        {
+            return _users.DeleteOne(u => u.Id == id);
+        }
+
+        public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
+
+        public List<User> GetUsers() => _users.Find(user => true).ToList();
+        
     }
 }

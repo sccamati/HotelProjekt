@@ -12,37 +12,58 @@ namespace ReservationAPI.Controllers
     [ApiController]
     public class ReservationController : Controller
     {
-        private readonly ReservationService service;
+        private readonly ReservationService _service;
 
-        public ReservationController(ReservationService _service)
+        public ReservationController(ReservationService service)
         {
-            service = _service;
+            _service = service;
         }
 
         [HttpGet]
-        public ActionResult<List<Reservation>> GetReservations()
+        public ActionResult<List<Reservation>> Get()
         {
-            return service.GetReservations();
+            return _service.GetReservations();
         }
 
         [HttpGet("{id:length(24)}")]
-        public ActionResult<List<Reservation>> GetReservation(string id)
+        public ActionResult<Reservation> Get(string id)
         {
-            var reservation = service.GetReservation(id);
-            return Json(reservation);
+            var reservation = _service.GetReservation(id);
+            if(reservation == null)
+            {
+                return NotFound();
+            }
+            return Ok(reservation);
         }
 
-        [HttpGet("delete/{id:length(24)}")]
-        public void DeleteReservation(string id)
+        [HttpDelete("{id:length(24)}")]
+        public ActionResult Delete(string id)
         {
-            service.DeleteReservation(id);
+            if (_service.Delete(id).DeletedCount == 0)
+            {
+                return NotFound();
+            }
+            return Ok();
         }
 
         [HttpPost]
-        public ActionResult<Reservation> Create(Reservation reservation)
+        public ActionResult Create(Reservation reservation)
         {
-            service.Create(reservation);
-            return Json(reservation);
+            _service.Create(reservation);
+            return Ok(reservation);
+        }
+
+        [HttpPut]
+        public ActionResult Put(string id, Reservation reservation)
+        {
+            if(_service.Update(id, reservation).ModifiedCount == 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(reservation);
+            }
         }
 
 

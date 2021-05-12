@@ -19,25 +19,46 @@ namespace IdentityAPI.Controllers
             service = _service;
         }
 
+        [HttpPost]
+        public ActionResult Create(User user)
+        {
+            service.Create(user);
+            return Ok(user);
+        }
+
+        [HttpPut("{id:length(24)}")]
+        public ActionResult Update(string id, User user)
+        {
+            if (service.Update(id, user).ModifiedCount == 0)
+            {
+                return NotFound();
+            }
+                
+            return Ok();
+        }
+
+        /*[HttpPost("/delete/{id:length(24)}")]
+        public ActionResult<> DeleteHotel(string id)
+        {
+            service.Delete(id);
+            return RedirectToAction("Index", "Home");
+        }*/
+
+        [HttpGet("{id:length(24)}")]
+        public ActionResult Get(string id)
+        {
+            var user = service.GetUser(id);
+            if(user == null)
+            {
+                NotFound();
+            }
+            return Ok(user);
+        }
+
         [HttpGet]
-        public ActionResult<List<User>> GetUsers()
+        public ActionResult<List<User>> Get()
         {
             return service.GetUsers();
         }
-
-        [HttpGet("{id:length(24)}")]
-        public ActionResult<List<User>> GetUser(string id)
-        {
-            var user = service.GetUser(id);
-            return Json(user);
-        }
-
-        [HttpPost]
-        public ActionResult<User> Create (User user)
-        {
-            service.Create(user);
-            return Json(user);
-        }
-
     }
 }
