@@ -35,14 +35,14 @@ namespace HotelAPI.Controllers
             return Json(hotel);
         }
 
-        [HttpGet("/delete/{id:length(24)}")]
+        [HttpPost("/delete/{id:length(24)}")]
         public ActionResult<List<Hotel>> DeleteHotel(string id)
         {
             return hotelService.DeleteHotel(id);
         }
 
         [HttpGet("/get/{id:length(24)}")]
-        public ActionResult<List<Hotel>> GetHotel(string id)
+        public ActionResult<Hotel> GetHotel(string id)
         {
             var hotel = hotelService.GetHotel(id);
             return Json(hotel);
@@ -76,7 +76,7 @@ namespace HotelAPI.Controllers
             return Json(room);
         }*/
 
-        [HttpGet("room/delete/{id:length(24)}")]
+        [HttpPost("room/delete/{id:length(24)}")]
         public ActionResult<Hotel> DeleteRoom(string id, int number)
         {
             var hotel = hotelService.DeleteRoom(id, number);

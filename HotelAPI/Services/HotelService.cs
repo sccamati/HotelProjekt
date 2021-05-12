@@ -21,7 +21,6 @@ namespace HotelAPI.Services
             hotels = database.GetCollection<Hotel>("Hotels");
         }
 
-
         //Hotels CRUD
 
         public Hotel CreateHotel(Hotel hotel)

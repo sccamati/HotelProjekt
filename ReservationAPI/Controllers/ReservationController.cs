@@ -33,9 +33,9 @@ namespace ReservationAPI.Controllers
         }
 
         [HttpGet("delete/{id:length(24)}")]
-        public void DeleteReservation(string id)
+        public ActionResult<List<Reservation>> DeleteReservation(string id)
         {
-            service.DeleteReservation(id);
+            return service.DeleteReservation(id);
         }
 
         [HttpPost]

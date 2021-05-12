@@ -18,12 +18,27 @@ namespace IdentityAPI.Controllers
         {
             service = _service;
         }
-
-        [HttpGet]
-        public ActionResult<List<User>> GetUsers()
+        
+        [HttpPost]
+        public ActionResult<User> Create (User user)
         {
-            return service.GetUsers();
+            service.Create(user);
+            return Json(user);
         }
+
+        [HttpPost("/update/{id:length(24)}")]
+        public ActionResult<User> Update(string id, User user)
+        {
+            service.Update(id, user);
+            return Json(user);
+        }
+
+        /*[HttpPost("/delete/{id:length(24)}")]
+        public ActionResult<> DeleteHotel(string id)
+        {
+            service.Delete(id);
+            return RedirectToAction("Index", "Home");
+        }*/
 
         [HttpGet("{id:length(24)}")]
         public ActionResult<List<User>> GetUser(string id)
@@ -32,12 +47,10 @@ namespace IdentityAPI.Controllers
             return Json(user);
         }
 
-        [HttpPost]
-        public ActionResult<User> Create (User user)
+        [HttpGet("/all")]
+        public ActionResult<List<User>> GetUsers()
         {
-            service.Create(user);
-            return Json(user);
+            return service.GetUsers();
         }
-
     }
 }

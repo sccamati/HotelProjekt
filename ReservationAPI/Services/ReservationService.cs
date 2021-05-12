@@ -31,9 +31,10 @@ namespace ReservationAPI.Services
             return reservation;
         }
 
-        public void DeleteReservation(string id)
+        public List<Reservation> DeleteReservation(string id)
         {
             reservations.DeleteOne(r => r.Id == id);
+            return reservations.Find(reservations => true).ToList();
         }
     }
 }

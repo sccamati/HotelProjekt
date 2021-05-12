@@ -19,8 +19,6 @@ namespace IdentityAPI.Services
             users = database.GetCollection<User>("Users");
         }
 
-        public List<User> GetUsers() => users.Find(user => true).ToList();
-        public User GetUser(string id) => users.Find<User>(user => user.Id == id).FirstOrDefault();
         public User Create(User user)
         {
             using (SHA256 sha256Hash = SHA256.Create())
@@ -32,5 +30,22 @@ namespace IdentityAPI.Services
             users.InsertOne(user);
             return user;
         }
+
+        public User Update(string id, User user)
+        {
+            users.ReplaceOne(u => u.Id == id, user);
+            return GetUser(id);
+        }
+
+        public void Delete(string id)
+        {
+            var filter = Builders<User>.Filter.Eq("Id", id);
+            users.DeleteOne(filter);
+        }
+
+        public User GetUser(string id) => users.Find<User>(user => user.Id == id).FirstOrDefault();
+
+        public List<User> GetUsers() => users.Find(user => true).ToList();
+        
     }
 }
