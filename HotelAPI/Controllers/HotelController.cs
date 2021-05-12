@@ -19,6 +19,8 @@ namespace HotelAPI.Controllers
             hotelService = _hotelService;
         }
 
+        //Hotels CRUD
+
         [HttpPost("/create")]
         public ActionResult<Hotel> CreateHotel(Hotel hotel)
         {
@@ -26,10 +28,17 @@ namespace HotelAPI.Controllers
             return Json(hotel);
         }
 
-        [HttpGet("/all")]
-        public ActionResult<List<Hotel>> GetHotels()
+        [HttpPost("/update/{id:length(24)}")]
+        public ActionResult<Hotel> UpdateHotel(string id, Hotel hotel)
         {
-            return hotelService.GetHotels();
+            hotelService.UpdateHotel(id, hotel);
+            return Json(hotel);
+        }
+
+        [HttpGet("/delete/{id:length(24)}")]
+        public ActionResult<List<Hotel>> DeleteHotel(string id)
+        {
+            return hotelService.DeleteHotel(id);
         }
 
         [HttpGet("/get/{id:length(24)}")]
@@ -39,6 +48,20 @@ namespace HotelAPI.Controllers
             return Json(hotel);
         }
 
+        [HttpGet("/all")]
+        public ActionResult<List<Hotel>> GetHotels()
+        {
+            return hotelService.GetHotels();
+        }
+
+        [HttpGet("/ownerHotels/{ownerId:length(24)}")]
+        public ActionResult<List<Hotel>> GetOwnerHotels(string ownerId)
+        {
+            return hotelService.GetOwnerHotels(ownerId);
+        }
+
+        //Rooms CRUD        
+
         [HttpPost("room/create/{hotelId:length(24)}")]
         public ActionResult<Room> CreateRoom(string hotelId, Room room)
         {
@@ -46,10 +69,18 @@ namespace HotelAPI.Controllers
             return Json(room);
         }
 
-        [HttpGet("rooms/all/{hotelId:length(24)}")]
-        public ActionResult<List<Room>> GetRooms(string hotelId)
+        /*[HttpPost("room/update/{hotelId:length(24)}")]
+        public ActionResult<Room> UpdateRoom(string hotelId, int number, Room room)
         {
-            return hotelService.GetRooms(hotelId);
+            hotelService.UpdateRoom(hotelId, number, room);
+            return Json(room);
+        }*/
+
+        [HttpGet("room/delete/{id:length(24)}")]
+        public ActionResult<Hotel> DeleteRoom(string id, int number)
+        {
+            var hotel = hotelService.DeleteRoom(id, number);
+            return Json(hotel);
         }
 
         [HttpGet("room/get/{hotelId:length(24)}")]
@@ -59,16 +90,19 @@ namespace HotelAPI.Controllers
             return Json(room);
         }
 
-        [HttpGet("rooms/filtred")]
-        public ActionResult<List<Room>> GetFiltredRooms(string city, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
+        [HttpGet("rooms/all/{hotelId:length(24)}")]
+        public ActionResult<List<Room>> GetRooms(string hotelId)
         {
-            return Json(hotelService.GetFiltredRooms(city, bedForOne, bedForTwo, numberOfGuests, price, standard));
+            return hotelService.GetRooms(hotelId);
+        }      
+        
+
+        [HttpGet("rooms/filtred")]
+        public ActionResult<List<Room>> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
+        {
+            return Json(hotelService.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard));
         }
 
-        [HttpGet("/ownerHotels/{ownerId:length(24)}")]
-        public ActionResult<List<Hotel>> GetOwnerHotels(string ownerId)
-        {
-            return hotelService.GetOwnerHotels(ownerId);
-        }
+        
     }
 }
