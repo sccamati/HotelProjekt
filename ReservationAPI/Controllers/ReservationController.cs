@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ReservationAPI.Models;
 using ReservationAPI.Services;
 using System;
@@ -10,6 +11,7 @@ namespace ReservationAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ReservationController : Controller
     {
         private readonly ReservationService _service;

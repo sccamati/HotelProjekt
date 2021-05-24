@@ -6,23 +6,27 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using WebMVC.Config;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
 
 namespace WebMVC.Services
 {
     public class ReservationService : IReservationService
     {
-        private readonly HttpClient apiClient;
-
-        public ReservationService(HttpClient httpClient)
+        private readonly HttpClient _apiClient;
+        private readonly IHttpContextAccessor _accessor;
+        public ReservationService(HttpClient httpClient, IHttpContextAccessor accessor)
         {
-            apiClient = httpClient;
+            _apiClient = httpClient;
+            _accessor = accessor;
         }
 
         public async Task<Reservation> CreateReservationAsync(Reservation reservation)
         {
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.Create();
             var content = new StringContent(JsonSerializer.Serialize(reservation), System.Text.Encoding.UTF8, "application/json");
-            var response = await apiClient.PostAsync(url, content);
+            var response = await _apiClient.PostAsync(url, content);
 
             response.EnsureSuccessStatusCode();
 
@@ -35,8 +39,9 @@ namespace WebMVC.Services
 
         public async Task<Reservation> DeleteReservationAsync(string id)
         {
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.Delete(id);
-            var response = await apiClient.GetAsync(url);
+            var response = await _apiClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();
@@ -48,8 +53,9 @@ namespace WebMVC.Services
 
         public async Task<List<Reservation>> GetAllReservationsAsync()
         {
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.Get();
-            var response = await apiClient.GetAsync(url);
+            var response = await _apiClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();
@@ -61,8 +67,9 @@ namespace WebMVC.Services
 
         public async Task<Reservation> GetReservationAsync(string id)
         {
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.GetById(id);
-            var response = await apiClient.GetAsync(url);
+            var response = await _apiClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();

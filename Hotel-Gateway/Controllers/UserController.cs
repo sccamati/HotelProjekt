@@ -1,7 +1,6 @@
-﻿using Hotel_Gateway.Services;
-using Microsoft.AspNetCore.Http;
+﻿using Hotel_Gateway.Models;
+using Hotel_Gateway.Services;
 using Microsoft.AspNetCore.Mvc;
-using Hotel_Gateway.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,22 +10,24 @@ namespace Hotel_Gateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReservationController : Controller
+    public class UserController : Controller
     {
-        private readonly IReservationService _reservationService;
+        private readonly IUserService _userService;
 
-        public ReservationController(IReservationService reservationService)
+        public UserController(IUserService userService)
         {
-            _reservationService = reservationService;
+            _userService = userService;
         }
 
+        // POST: ReservationController/Create
         [HttpPost]
-        public ActionResult Create(Reservation reservation)
+        public ActionResult Create(User user)
         {
-            _reservationService.CreateReservationAsync(reservation);
+            _userService.CreateUserAsync(user);
             return Ok();
         }
 
+        // POST: ReservationController/Delete/5
         [HttpDelete("{id:length(24)}")]
         public async Task<ActionResult> Delete(string id)
         {
@@ -35,9 +36,9 @@ namespace Hotel_Gateway.Controllers
                 return BadRequest("Need valid reservation id");
             }
 
-            var res = await _reservationService.DeleteReservationAsync(id);
+            var res = await _userService.DeleteUserAsync(id);
 
-            if(res == null)
+            if (res == null)
             {
                 return BadRequest($"No reservation found for id {id}");
             }
@@ -46,14 +47,14 @@ namespace Hotel_Gateway.Controllers
         }
 
         [HttpGet("{id:length(24)}")]
-        public async  Task<ActionResult<Reservation>> GetReservation(string id)
+        public async Task<ActionResult<User>> GetUser(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Need valid reservation id");
             }
 
-            var res = await _reservationService.GetReservationAsync(id);
+            var res = await _userService.GetUserAsync(id);
 
             if (res == null)
             {
@@ -64,27 +65,27 @@ namespace Hotel_Gateway.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Reservation>>> GetAllReservations()
+        public async Task<ActionResult<List<User>>> GetUsers()
         {
-            var res = await _reservationService.GetAllReservationsAsync();
+            var res = await _userService.GetUsersAsync();
 
             if (res == null)
             {
-                return BadRequest($"0 reservations");
+                return BadRequest($"0 users");
             }
 
             return res;
         }
 
         [HttpPut("{id:length(24)}")]
-        public async Task<ActionResult<Reservation>> UpdateReservation(string id, Reservation reservation)
+        public async Task<ActionResult<User>> UpdateUser(string id, User user)
         {
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Need valid reservation id");
             }
 
-            var res = await _reservationService.UpdateReservationAsync(id, reservation);
+            var res = await _userService.UpdateUserAsync(id, user);
             if (res == null)
             {
                 return BadRequest($"No reservation found for id {id}");

@@ -1,5 +1,6 @@
 ﻿using IdentityAPI.Models;
 using IdentityAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace IdentityAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly UserService service;
@@ -37,13 +39,6 @@ namespace IdentityAPI.Controllers
             return Ok();
         }
 
-        /*[HttpPost("/delete/{id:length(24)}")]
-        public ActionResult<> DeleteHotel(string id)
-        {
-            service.Delete(id);
-            return RedirectToAction("Index", "Home");
-        }*/
-
         [HttpGet("{id:length(24)}")]
         public ActionResult Get(string id)
         {
@@ -60,5 +55,6 @@ namespace IdentityAPI.Controllers
         {
             return service.GetUsers();
         }
+
     }
 }

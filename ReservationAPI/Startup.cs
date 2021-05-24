@@ -9,6 +9,9 @@ using Microsoft.OpenApi.Models;
 using ReservationAPI.Models;
 using ReservationAPI.Services;
 using Steeltoe.Discovery.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ReservationAPI
 {
@@ -24,8 +27,24 @@ namespace ReservationAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddSingleton<IDatabaseSettings>(db =>db.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+            services.AddAuthentication(s =>
+            {
+                s.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                s.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+           .AddJwtBearer(x =>
+           {
+               x.RequireHttpsMetadata = false;
+               x.SaveToken = true;
+               x.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuerSigningKey = true,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("SecretKey").Value)),
+                   ValidateIssuer = false,
+                   ValidateAudience = false
+               };
+           });
+            services.AddSingleton<IDatabaseSettings>(db => db.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             services.AddScoped<ReservationService>();
             services.AddMvc();
             services.AddDiscoveryClient(Configuration);
@@ -50,6 +69,7 @@ namespace ReservationAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseDiscoveryClient();

@@ -9,30 +9,27 @@ using WebMVC.Services;
 
 namespace WebMVC.Controllers
 {
-    public class ReservationController : Controller
+    public class UserController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
 
-        private readonly IReservationService _reservationService;
+        private readonly IUserService _userService;
         private readonly IHttpContextAccessor _accessor;
-        public ReservationController(IReservationService reservationService, IHttpContextAccessor accessor)
+
+        public UserController(IUserService userService, IHttpContextAccessor accessor)
         {
-            _reservationService = reservationService;
+            _userService = userService;
             _accessor = accessor;
         }
 
         // POST: ReservationController/Create
         [HttpPost]
-        public ActionResult Create(Reservation reservation)
+        public ActionResult Create(User user)
         {
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
-            _reservationService.CreateReservationAsync(reservation);
+            _userService.CreateUserAsync(user);
             return Ok();
         }
 
@@ -46,21 +43,21 @@ namespace WebMVC.Controllers
             }
             if (string.IsNullOrEmpty(id))
             {
-                return BadRequest("Need valid reservation id");
+                return BadRequest("Need valid user id");
             }
 
-            var res = await _reservationService.DeleteReservationAsync(id);
+            var res = await _userService.DeleteUserAsync(id);
 
             if (res == null)
             {
-                return BadRequest($"No reservation found for id {id}");
+                return BadRequest($"No user found for id {id}");
             }
 
             return Ok();
         }
 
         [HttpGet]
-        public async Task<ActionResult<Reservation>> GetReservation(string id)
+        public async Task<ActionResult<User>> GetUser(string id)
         {
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
@@ -68,34 +65,34 @@ namespace WebMVC.Controllers
             }
             if (string.IsNullOrEmpty(id))
             {
-                return BadRequest("Need valid reservation id");
+                return BadRequest("Need valid user id");
             }
 
-            var res = await _reservationService.GetReservationAsync(id);
+            var res = await _userService.GetUserAsync(id);
 
             if (res == null)
             {
-                return BadRequest($"No reservation found for id {id}");
+                return BadRequest($"No user found for id {id}");
             }
 
-            return View("ReservationDetails", res);
+            return View("UserDetails", res);
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Reservation>>> GetAllReservations()
+        public async Task<ActionResult<List<User>>> GetUsers()
         {
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
-            var res = await _reservationService.GetAllReservationsAsync();
+            var res = await _userService.GetUsersAsync();
 
             if (res == null)
             {
                 return BadRequest($"0 reservations");
             }
 
-            return View("ListRes",res);
+            return View("UserList", res);
         }
     }
 }
