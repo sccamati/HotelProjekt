@@ -49,7 +49,7 @@ namespace WebMVC.Controllers
             return Ok();
         }
 
-        [HttpGet("{id:length(24)}")]
+        [HttpGet]
         public async Task<ActionResult<Reservation>> GetReservation(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -64,7 +64,7 @@ namespace WebMVC.Controllers
                 return BadRequest($"No reservation found for id {id}");
             }
 
-            return res;
+            return View("ReservationDetails", res);
         }
 
         [HttpGet]

@@ -73,5 +73,19 @@ namespace Hotel_Gateway.Services
             });
         }
 
+        public async Task<Reservation> UpdateReservationAsync(string id, Reservation reservation)
+        {
+            var url = UrlsConfig.ReservationOperations.Update();
+            var content = new StringContent(JsonSerializer.Serialize(reservation), System.Text.Encoding.UTF8, "application/json");
+            var response = await apiClient.PostAsync(url + id, content);
+
+            response.EnsureSuccessStatusCode();
+
+            var reservationResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<Reservation>(reservationResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        }
     }
 }

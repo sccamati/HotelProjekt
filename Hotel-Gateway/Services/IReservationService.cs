@@ -12,6 +12,6 @@ namespace Hotel_Gateway.Services
         Task<List<Reservation>> GetAllReservationsAsync();
         Task<Reservation> DeleteReservationAsync(string id);
         Task<Reservation> CreateReservationAsync(Reservation reservation);
-        //Task<Reservation> UpdateReservationAsync(string id, Reservation reservation);
+        Task<Reservation> UpdateReservationAsync(string id, Reservation reservation);
     }
 }

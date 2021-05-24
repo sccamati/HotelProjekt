@@ -44,6 +44,5 @@ namespace IdentityAPI.Services
         public User GetUser(string id) => _users.Find<User>(user => user.Id == id).FirstOrDefault();
 
         public List<User> GetUsers() => _users.Find(user => true).ToList();
-        
     }
 }

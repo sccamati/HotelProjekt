@@ -60,5 +60,6 @@ namespace IdentityAPI.Controllers
         {
             return service.GetUsers();
         }
+
     }
 }

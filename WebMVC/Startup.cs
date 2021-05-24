@@ -26,6 +26,7 @@ namespace WebMVC
         {
             services.AddControllersWithViews();
             services.AddSingleton<IReservationService, ReservationService>();
+            services.AddSingleton<IUserService, UserService>();
             services.AddHttpClient();
         }
 

@@ -34,6 +34,7 @@ namespace Hotel_Gateway
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hotel_Gateway", Version = "v1" });
             });
             services.AddSingleton<IReservationService, ReservationService>();
+            services.AddSingleton<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

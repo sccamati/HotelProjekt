@@ -7,5 +7,6 @@ namespace Hotel_Gateway.Services
 {
     public class HotelService
     {
+
     }
 }
