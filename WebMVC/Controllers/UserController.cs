@@ -11,6 +11,10 @@ namespace WebMVC.Controllers
 {
     public class UserController : Controller
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         private readonly IUserService _userService;
         private readonly IHttpContextAccessor _accessor;
