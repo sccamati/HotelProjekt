@@ -49,6 +49,7 @@ namespace IdentityAPI.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                    new Claim("id", user.Id),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
@@ -63,7 +64,7 @@ namespace IdentityAPI.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return new LoggedUser() { Token = tokenHandler.WriteToken(token), Email = user.Email, Role = user.Role.ToString() };
+            return new LoggedUser() { Token = tokenHandler.WriteToken(token), Id = user.Id, Email = user.Email, Role = user.Role.ToString() };
         }
     }
 }

@@ -13,5 +13,7 @@ namespace WebMVC.Services
         Task<Reservation> DeleteReservationAsync(string id);
         Task<Reservation> CreateReservationAsync(Reservation reservation);
         //Task<Reservation> UpdateReservationAsync(string id, Reservation reservation);
+        Task<List<Reservation>> GetUsersReservations();
+        
     }
 }

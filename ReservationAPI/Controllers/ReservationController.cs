@@ -38,6 +38,17 @@ namespace ReservationAPI.Controllers
             return Ok(reservation);
         }
 
+        [HttpGet("UsersRes/{id:length(24)}")]
+        public ActionResult<Reservation> GetUsersReservation(string id)
+        {
+            var reservation = _service.GetUserReservations(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            return Ok(reservation);
+        }
+
         [HttpDelete("{id:length(24)}")]
         public ActionResult Delete(string id)
         {

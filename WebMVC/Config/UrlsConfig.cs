@@ -14,6 +14,7 @@ namespace WebMVC.Config
             public static string Delete(string id) => $"https://localhost:44343/api/Reservation/{id}";
             public static string Create() => $"https://localhost:44343/api/Reservation/";
             public static string Update() => $"https://localhost:44343/api/Reservation/";
+            public static string GetUsersRes(string id) => $"https://localhost:44343/api/Reservation/UsersRes/{id}";
         }
         public class HotelOperations
         {

@@ -27,13 +27,15 @@ namespace WebMVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginUser user)
         {
-            var witam = await _authorizeService.LogInAsync(user);
-            if(witam == null)
+            var u = await _authorizeService.LogInAsync(user);
+            if(u == null)
             {
                 BadRequest();
             }
             //Save token in session object
-            _accessor.HttpContext.Session.SetString("JWToken", witam.Token);
+            _accessor.HttpContext.Session.SetString("JWToken", u.Token);
+            _accessor.HttpContext.Session.SetString("ID", u.Id);
+            _accessor.HttpContext.Session.SetString("Role", u.Role);
             return RedirectToAction("Index", "Home");
         }
     }

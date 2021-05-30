@@ -11,7 +11,7 @@ namespace IdentityAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+
     public class UserController : Controller
     {
         private readonly UserService service;
@@ -27,7 +27,7 @@ namespace IdentityAPI.Controllers
             service.Create(user);
             return Ok(user);
         }
-
+        [Authorize]
         [HttpPut("{id:length(24)}")]
         public ActionResult Update(string id, User user)
         {
@@ -38,7 +38,7 @@ namespace IdentityAPI.Controllers
                 
             return Ok();
         }
-
+        [Authorize]
         [HttpGet("{id:length(24)}")]
         public ActionResult Get(string id)
         {
@@ -50,6 +50,7 @@ namespace IdentityAPI.Controllers
             return Ok(user);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult<List<User>> Get()
         {

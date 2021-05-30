@@ -29,7 +29,8 @@ namespace WebMVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
-
+            services.AddMvc();
+            services.AddMemoryCache();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromSeconds(10);
@@ -38,6 +39,7 @@ namespace WebMVC
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
             services.AddSingleton<IReservationService, ReservationService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IAuthorizeService, AuthorizeService>();
@@ -59,7 +61,7 @@ namespace WebMVC
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+            app.UseStatusCodePages();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
