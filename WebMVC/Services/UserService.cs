@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -22,20 +23,14 @@ namespace WebMVC.Services
             _accessor = accessor;
         }
 
-        public async Task<User> CreateUserAsync(User user)
+        public async Task<bool> CreateUserAsync(User user)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            user.Role = RoleType.User;
             var url = UrlsConfig.UserOperations.Create();
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync(url, content);
 
-            response.EnsureSuccessStatusCode();
-
-            var userResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<User>(userResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return response.StatusCode != HttpStatusCode.BadRequest;
         }
 
         public async Task<User> DeleteUserAsync(string id)
@@ -82,17 +77,17 @@ namespace WebMVC.Services
             });
         }
 
-        public async Task<User> UpdateUserAsync(string id, User user)
+        public async Task<User> UpdateUserAsync(User user)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.UserOperations.Update();
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
-            var response = await _apiClient.PostAsync(url + id, content);
+            var response = await _apiClient.PutAsync(url, content);
 
             response.EnsureSuccessStatusCode();
 
-            var reservationResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<User>(reservationResponse, new JsonSerializerOptions
+            var userResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<User>(userResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });

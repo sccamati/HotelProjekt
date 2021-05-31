@@ -21,6 +21,11 @@ namespace IdentityAPI.Services
 
         public User Create(User user)
         {
+            if(_users.Find(u => u.Email == user.Email).CountDocuments() == 1)
+            {
+                user.Id = "error";
+                return user;
+            }
             using (SHA256 sha256Hash = SHA256.Create())
             {
                 string hash = Hash.GetHash(sha256Hash, user.Password);
@@ -31,9 +36,9 @@ namespace IdentityAPI.Services
             return user;
         }
 
-        public ReplaceOneResult Update(string id, User user)
+        public ReplaceOneResult Update(User user)
         {
-            return _users.ReplaceOne(u => u.Id == id, user);
+            return _users.ReplaceOne(u => u.Id == user.Id, user);
         }
 
         public DeleteResult Delete(string id)

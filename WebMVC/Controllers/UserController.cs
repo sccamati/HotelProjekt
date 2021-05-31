@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,6 @@ namespace WebMVC.Controllers
             _userService.CreateUserAsync(user);
             return Ok();
         }
-
         // POST: ReservationController/Delete/5
         [HttpDelete("{id:length(24)}")]
         public async Task<ActionResult> Delete(string id)
@@ -57,9 +57,8 @@ namespace WebMVC.Controllers
                 return BadRequest($"No user found for id {id}");
             }
 
-            return Ok();
+            return RedirectToAction("GetUsers");
         }
-
         [HttpGet]
         public async Task<ActionResult<User>> GetUser(string id)
         {
@@ -81,7 +80,6 @@ namespace WebMVC.Controllers
 
             return View("UserDetails", res);
         }
-
         [HttpGet]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
@@ -97,6 +95,64 @@ namespace WebMVC.Controllers
             }
 
             return View("UserList", res);
+        }
+        [HttpGet]
+        public async Task<ActionResult> Edit(string id)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("Need valid user id");
+            }
+
+            var res = await _userService.GetUserAsync(id);
+
+            if (res == null)
+            {
+                return BadRequest($"No user found for id {id}");
+            }
+
+            return View("EditUser", res);
+        }
+        // POST: ReservationController/Create
+
+        [HttpPost]
+        public async Task<ActionResult> Edit(User user)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+            var res = await _userService.UpdateUserAsync(user);
+            if (res == null)
+            {
+                return BadRequest($"Error wbile editing");
+            }
+            return RedirectToAction("GetUsers");
+        }
+
+        [HttpGet]
+        public  ActionResult Register()
+        {
+            ViewBag.register = "";
+            return View("RegisterUser");
+        }
+        [HttpPost]
+        public async Task<ActionResult> Register(User user)
+        {
+            var res = await _userService.CreateUserAsync(user);
+            if (!res)
+            {
+                ViewBag.register = "Register fail.";
+            }
+            else
+            {
+                ViewBag.register = "Register success. Now you can login";
+            }
+            return View("RegisterUser");
         }
     }
 }

@@ -24,19 +24,23 @@ namespace IdentityAPI.Controllers
         [HttpPost]
         public ActionResult Create(User user)
         {
-            service.Create(user);
+            var u = service.Create(user);
+            if(u.Id == "error")
+            {
+                return BadRequest("There is already account with this email");
+            }
             return Ok(user);
         }
         [Authorize]
-        [HttpPut("{id:length(24)}")]
-        public ActionResult Update(string id, User user)
+        [HttpPut]
+        public ActionResult Update(User user)
         {
-            if (service.Update(id, user).ModifiedCount == 0)
+            if (service.Update(user).ModifiedCount == 0)
             {
                 return NotFound();
             }
                 
-            return Ok();
+            return Ok(user);
         }
         [Authorize]
         [HttpGet("{id:length(24)}")]

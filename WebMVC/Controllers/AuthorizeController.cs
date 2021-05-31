@@ -38,5 +38,14 @@ namespace WebMVC.Controllers
             _accessor.HttpContext.Session.SetString("Role", u.Role);
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        public ActionResult LogOut()
+        {
+            _accessor.HttpContext.Session.Remove("JWToken");
+            _accessor.HttpContext.Session.Remove("ID");
+            _accessor.HttpContext.Session.Remove("Role");
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

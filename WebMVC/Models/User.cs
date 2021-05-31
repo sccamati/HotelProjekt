@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
@@ -16,10 +17,12 @@ namespace WebMVC.Models
         [BsonElement("Password")]
         public string Password { get; set; }
         [BsonElement("Role")]
-        public Role Role { get; set; }
+        public RoleType Role { get; set; }
+
     }
 
-    public enum Role{
+    public enum RoleType
+    {
         Admin,
         User,
         Owner

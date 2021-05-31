@@ -26,25 +26,42 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Authorize" asp-action="Index">Login</a>
-                        </li>
-                        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Admin")
+                        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
                         {
+                            @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="GetAllReservations">Reservations</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="GetUsers">Users</a>
+                                </li>
+                            }
+
+                            @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "User")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="GetUsersReservations">MyReservations</a>
+                                </li>
+
+                            }
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="GetAllReservations">Reservations</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="GetUsers">Users</a>
-                            </li>
-                        }
-                        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "User")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="GetUsersReservations">MyReservations</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Authorize" asp-action="LogOut">LogOut</a>
                             </li>
 
+
                         }
+                        else
+                        {
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Authorize" asp-action="Index">Login</a>
+                            </li>
+                        }
+
 
 
                     </ul>
