@@ -45,7 +45,13 @@
                             </li>
 
                         }
+                        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Authorize" asp-action="LogOut">LogOut</a>
+                            </li>
 
+                        }
 
                     </ul>
                 </div>
