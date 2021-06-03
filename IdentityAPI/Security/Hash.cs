@@ -14,7 +14,6 @@ namespace IdentityAPI.Security
 
             // Convert the input string to a byte array and compute the hash.
             byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
-
             // Create a new Stringbuilder to collect the bytes
             // and create a string.
             var sBuilder = new StringBuilder();

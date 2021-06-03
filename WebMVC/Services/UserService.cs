@@ -25,7 +25,6 @@ namespace WebMVC.Services
 
         public async Task<bool> CreateUserAsync(User user)
         {
-            user.Role = RoleType.User;
             var url = UrlsConfig.UserOperations.Create();
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync(url, content);

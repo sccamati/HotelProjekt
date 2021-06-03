@@ -31,13 +31,21 @@ namespace IdentityAPI.Services
                 string hash = Hash.GetHash(sha256Hash, user.Password);
                 user.Password = hash;
             }
-            user.Role = Role.User;
             _users.InsertOne(user);
             return user;
         }
 
         public ReplaceOneResult Update(User user)
         {
+            var u = GetUser(user.Id);
+            if(user.Password == user.Password)
+            {
+                using (SHA256 sha256Hash = SHA256.Create())
+                {
+                    string hash = Hash.GetHash(sha256Hash, user.Password);
+                    user.Password = hash;
+                }
+            }
             return _users.ReplaceOne(u => u.Id == user.Id, user);
         }
 

@@ -114,7 +114,6 @@ namespace WebMVC.Controllers
             {
                 return BadRequest($"No user found for id {id}");
             }
-
             return View("EditUser", res);
         }
         // POST: ReservationController/Create
@@ -126,6 +125,7 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
             var res = await _userService.UpdateUserAsync(user);
             if (res == null)
             {
@@ -143,6 +143,7 @@ namespace WebMVC.Controllers
         [HttpPost]
         public async Task<ActionResult> Register(User user)
         {
+            user.Role = RoleType.User;
             var res = await _userService.CreateUserAsync(user);
             if (!res)
             {
@@ -153,6 +154,27 @@ namespace WebMVC.Controllers
                 ViewBag.register = "Register success. Now you can login";
             }
             return View("RegisterUser");
+        }
+
+        [HttpGet]
+        public ActionResult AdminRegister()
+        {
+            ViewBag.register = "";
+            return View("AdminRegister");
+        }
+        [HttpPost]
+        public async Task<ActionResult> AdminRegister(User user)
+        {
+            var res = await _userService.CreateUserAsync(user);
+            if (!res)
+            {
+                ViewBag.register = "Register fail.";
+            }
+            else
+            {
+                ViewBag.register = "Register success.";
+            }
+            return View("AdminRegister");
         }
     }
 }
