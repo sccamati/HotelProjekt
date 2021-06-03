@@ -106,10 +106,10 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
             var res = await _reservationService.GetUsersReservations();
-
-            if (res == null)
+            @ViewBag.empty = "";
+            if (res.Count == 0)
             {
-                return BadRequest($"0 reservations");
+                @ViewBag.empty = "You don't have any reservations";
             }
 
             return View("ListRes", res);
