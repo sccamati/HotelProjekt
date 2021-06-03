@@ -176,5 +176,26 @@ namespace WebMVC.Controllers
             }
             return View("AdminRegister");
         }
+        [HttpGet]
+        public async Task<ActionResult> Details(string id)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("Need valid user id");
+            }
+
+            var res = await _userService.GetUserAsync(id);
+
+            if (res == null)
+            {
+                return BadRequest($"No user found for id {id}");
+            }
+            return View("UserDetails", res);
+        }
+
     }
 }
