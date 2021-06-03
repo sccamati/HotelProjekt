@@ -28,9 +28,11 @@ namespace WebMVC.Controllers
         public async Task<ActionResult> Login(LoginUser user)
         {
             var u = await _authorizeService.LogInAsync(user);
-            if(u == null)
+            ViewBag.error = "";
+            if (u.Token == null)
             {
-                BadRequest();
+                ViewBag.error = "failed to login try again";
+                return View();
             }
             //Save token in session object
             _accessor.HttpContext.Session.SetString("JWToken", u.Token);

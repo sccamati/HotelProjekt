@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -22,14 +23,18 @@ namespace WebMVC.Services
             var url = UrlsConfig.AuthorizeOperations.LogIn();
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var response = await apiClient.PostAsync(url, content);
-
-            response.EnsureSuccessStatusCode();
-
             var reservationResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<LoggedUser>(reservationResponse, new JsonSerializerOptions
+            var u = JsonSerializer.Deserialize<LoggedUser>(reservationResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                u.Token = "";
+            }
+
+
+            return u;
         }
     }
 }
