@@ -10,7 +10,7 @@ namespace WebMVC.Services
     {
         Task<User> GetUserAsync(string id);
         Task<List<User>> GetUsersAsync();
-        Task<User> DeleteUserAsync(string id);
+        Task<bool> DeleteUserAsync(string id);
         Task<bool> CreateUserAsync(User user);
         Task<User> UpdateUserAsync(User user);
     }

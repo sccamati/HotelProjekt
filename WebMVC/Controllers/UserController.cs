@@ -37,10 +37,11 @@ namespace WebMVC.Controllers
             _userService.CreateUserAsync(user);
             return Ok();
         }
-        // POST: ReservationController/Delete/5
-        [HttpDelete("{id:length(24)}")]
+
+        [HttpGet("{id:length(24)}")]
         public async Task<ActionResult> Delete(string id)
         {
+            
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
@@ -52,16 +53,16 @@ namespace WebMVC.Controllers
 
             var res = await _userService.DeleteUserAsync(id);
 
-            if (res == null)
+            if (!res)
             {
-                return BadRequest($"No user found for id {id}");
+                return RedirectToAction("GetUsers");
             }
-
             return RedirectToAction("GetUsers");
         }
         [HttpGet]
         public async Task<ActionResult<User>> GetUser(string id)
         {
+            
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
@@ -196,6 +197,5 @@ namespace WebMVC.Controllers
             }
             return View("UserDetails", res);
         }
-
     }
 }

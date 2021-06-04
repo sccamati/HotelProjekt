@@ -32,18 +32,12 @@ namespace WebMVC.Services
             return response.StatusCode != HttpStatusCode.BadRequest;
         }
 
-        public async Task<User> DeleteUserAsync(string id)
+        public async Task<bool> DeleteUserAsync(string id)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.UserOperations.Delete(id);
-            var response = await _apiClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-
-            var userResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<User>(userResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var response = await _apiClient.DeleteAsync(url);
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
         public async Task<List<User>> GetUsersAsync()

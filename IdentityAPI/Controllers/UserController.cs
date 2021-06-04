@@ -61,5 +61,16 @@ namespace IdentityAPI.Controllers
             return service.GetUsers();
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id:length(24)}")]
+        public ActionResult Delete(string id)
+        {
+            var user = service.Delete(id);
+            if (user.DeletedCount != 1)
+            {
+                NotFound();
+            }
+            return Ok();
+        }
     }
 }

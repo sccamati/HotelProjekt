@@ -44,7 +44,7 @@ namespace WebMVC
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IAuthorizeService, AuthorizeService>();
             services.AddHttpClient();
-            services.AddRazorPages();
+            services.AddMvc().AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
