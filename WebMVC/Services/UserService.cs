@@ -74,8 +74,8 @@ namespace WebMVC.Services
         public async Task<List<User>> GetUsersAsync(string email)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.UserOperations.Get();
-            var response = await _apiClient.GetAsync(url+=email);
+            var url = UrlsConfig.UserOperations.Get(email);
+            var response = await _apiClient.GetAsync(url);
 
             response.EnsureSuccessStatusCode();
 
