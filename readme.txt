@@ -1,0 +1,1 @@
+Projekt uruchamiamy w visual studio. Aby go uruchomić należy wejść w właściwości solucji i zmienić w zakładce startup project opcję na multiple startup projects i przy każdym wybrać akcję start po zastosowaniu zmian można uruchomić projekt skrótem ctrl + f5
