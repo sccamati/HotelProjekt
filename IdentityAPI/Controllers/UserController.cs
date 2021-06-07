@@ -62,6 +62,14 @@ namespace IdentityAPI.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpGet("{email}")]
+        public ActionResult<List<User>> GetFiltered(string email)
+        {
+            var users = service.GetUsers();
+            return users.Where(u => u.Email.ToUpper().Contains(email.ToUpper())).ToList();
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:length(24)}")]
         public ActionResult Delete(string id)
         {
