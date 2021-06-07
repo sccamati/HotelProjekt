@@ -89,10 +89,10 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
             var res = await _reservationService.GetAllReservationsAsync();
-
+            ViewBag.empty = "";
             if (res == null)
             {
-                return BadRequest($"0 reservations");
+                ViewBag.empty = "0 reservations";
             }
 
             return View("ListRes",res);
