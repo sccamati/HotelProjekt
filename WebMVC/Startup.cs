@@ -33,7 +33,7 @@ namespace WebMVC
             services.AddMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromSeconds(3600);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
@@ -41,6 +41,7 @@ namespace WebMVC
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
             services.AddSingleton<IReservationService, ReservationService>();
+            services.AddSingleton<IHotelService, HotelService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IAuthorizeService, AuthorizeService>();
             services.AddHttpClient();

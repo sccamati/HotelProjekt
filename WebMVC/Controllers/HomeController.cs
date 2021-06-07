@@ -21,7 +21,7 @@ namespace WebMVC.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("GetHotels", "Hotel");
         }
 
         public IActionResult Privacy()
