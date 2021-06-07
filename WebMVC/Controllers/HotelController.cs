@@ -1,30 +1,32 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Threading.Tasks;
-using WebMVC.Config;
 using WebMVC.Models;
+using WebMVC.Services;
 
-namespace WebMVC.Services
+namespace WebMVC.Controllers
 {
-    
-    public class HotelService : IHotelService
+    public class HotelController : Controller
     {
-        private readonly HttpClient _apiClient;
-        private readonly IHttpContextAccessor _accessor;
-        public HotelService(HttpClient httpClient, IHttpContextAccessor accessor)
+        public IActionResult Index()
         {
-            _apiClient = httpClient;
+            return View();
+        }
+
+        private readonly IHttpContextAccessor _accessor;
+        private readonly IHotelService _service;
+
+        public HotelController(IHotelService hotelService, IHttpContextAccessor accessor)
+        {
+            _service = hotelService;
             _accessor = accessor;
         }
 
-
-        public async Task<bool> CreateHotel(Hotel hotel)
+        /*public async Task<bool> CreateHotel(Hotel hotel)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.HotelOperations.CreateHotel();
@@ -71,21 +73,21 @@ namespace WebMVC.Services
                 PropertyNameCaseInsensitive = true
             });
         }
+        */
 
-        public async Task<List<Hotel>> GetHotels()
+        [HttpGet]
+        public async Task<ActionResult<List<Hotel>>> GetHotels()
         {
-            var url = UrlsConfig.HotelOperations.GetHotels();
-            var response = await _apiClient.GetAsync(url);
+            var hotels = await _service.GetHotels();
 
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<Hotel>>(hotelResponse, new JsonSerializerOptions
+            if (hotels == null)
             {
-                PropertyNameCaseInsensitive = true
-            });
-        }
+                return BadRequest($"0 reservations");
+            }
 
+            return View("ListHotels", hotels);
+        }
+        /*
         public async Task<List<Hotel>> GetOwnerHotels(string ownerId)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
@@ -173,5 +175,6 @@ public async Task<Room> GetRoom(string hotelId, int number)
                 PropertyNameCaseInsensitive = true
             });
         }
+        */
     }
 }

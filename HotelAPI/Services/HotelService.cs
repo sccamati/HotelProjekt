@@ -29,17 +29,14 @@ namespace HotelAPI.Services
             return hotel;
         }
 
-        public Hotel UpdateHotel(string id, Hotel hotel)
+        public ReplaceOneResult UpdateHotel(string id, Hotel hotel)
         {
-            hotels.ReplaceOne(h => h.Id == id, hotel);
-            return GetHotel(id);
+            return hotels.ReplaceOne(h => h.Id == id, hotel);
         }
 
-        public List<Hotel> DeleteHotel(string id)
+        public DeleteResult DeleteHotel(string id)
         {
-            var filter = Builders<Hotel>.Filter.Eq("Id", id);
-            hotels.DeleteOne(filter);
-            return hotels.Find(hotel => true).ToList();
+            return hotels.DeleteOne(h => h.Id == id);
         }
 
         public Hotel GetHotel(string id) => hotels.Find<Hotel>(hotel => hotel.Id.Equals(id)).FirstOrDefault();
@@ -59,24 +56,6 @@ namespace HotelAPI.Services
 
             return room;
         }
-
-        /*public Room UpdateRoom(string hotelId, int number, Room room)
-        {
-            var filter = Builders<Hotel>.Filter.Eq("Id", hotelId);
-            var update = Builders<Hotel>.Update.Set("Array1.$[i].Array2.$[j].Array3", new[] { new Item { Id = "d" } });
-            var arrayFilters = new List<ArrayFilterDefinition> { new JsonArrayFilterDefinition<Item>("{'i.Id': 'b'}"), new JsonArrayFilterDefinition<Item>("{'j.Id': 'c'}") };
-            var updateOptions = new UpdateOptions { ArrayFilters = arrayFilters };
-            collection.UpdateOne(filter, update, updateOptions);
-
-            var itemFilter = Builders<Hotel>.Filter.Eq(h => h.Id, hotelId);
-            var updateBuilder = Builders<Hotel>.Update.Combine((h => h.Rooms, Builders<Room>.Filter.Eq("Number", number));
-            var filter = new BsonDocument("username", "bodrum");
-            hotels.UpdateOneAsync(itemFilter, updateBuilder, new UpdateOptions() { IsUpsert = true }).Wait();
-
-            hotels.UpdateOneAsync(itemFilter, updateBuilder, new UpdateOptions() { IsUpsert = true }).Wait();
-
-            return room;
-        }*/
 
         public Hotel DeleteRoom(string hotelId, int number)
         {

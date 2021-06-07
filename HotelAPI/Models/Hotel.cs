@@ -24,10 +24,5 @@ namespace HotelAPI.Models
         public List<Room> Rooms { get; set; }
         [BsonElement("OwnerID")]
         public string OwnerID { get; set; }
-
-        internal Task ToListAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
