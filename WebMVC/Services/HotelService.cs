@@ -161,7 +161,7 @@ public async Task<Room> GetRoom(string hotelId, int number)
             });
         }
 
-        public async Task<List<Room>> GetFiltredRooms(
+        public async Task<List<RoomHotelViewModel>> GetFiltredRooms(
             [FromQuery] string city,
             [FromQuery] string phrase,
             [FromQuery] int bedForOne,
@@ -180,7 +180,7 @@ public async Task<Room> GetRoom(string hotelId, int number)
             response.EnsureSuccessStatusCode();
 
             var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<Room>>(hotelResponse, new JsonSerializerOptions
+            return JsonSerializer.Deserialize<List<RoomHotelViewModel>>(hotelResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });

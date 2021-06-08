@@ -11,12 +11,6 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class="col-sm-10">
@@ -60,12 +54,6 @@
     {
 <dl class="row">
     <dt class="col-sm-2">
-        @Html.DisplayNameFor(i => item.Number)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(i => item.Number)
-    </dd>
-    <dt class="col-sm-2">
         @Html.DisplayNameFor(i => item.BedForOne)
     </dt>
     <dd class="col-sm-10">
@@ -105,7 +93,7 @@
         Delete
     </dt>
     <dd class="col-sm-10">
-        @Html.ActionLink("Delete", "DeleteRoom", new { id = Model.Id, number = item.Number })
+        @Html.ActionLink("Delete", "DeleteRoom", new { id = Model.Id, number = item.Id })
     </dd>
 </dl>
     }

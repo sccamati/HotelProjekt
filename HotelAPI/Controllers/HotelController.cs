@@ -85,9 +85,9 @@ namespace HotelAPI.Controllers
         }
 
         [HttpDelete("room/{id:length(24)}")]
-        public ActionResult<Hotel> DeleteRoom(string id, int number)
+        public ActionResult<Hotel> DeleteRoom(string hotelId, string roomId)
         {
-            var h = _service.DeleteRoom(id, number);
+            var h = _service.DeleteRoom(hotelId, roomId);
             if (h == null)
             {
                 NotFound();
@@ -96,9 +96,9 @@ namespace HotelAPI.Controllers
         }
 
         [HttpGet("room/{hotelId:length(24)}")]
-        public ActionResult GetRoom(string hotelId, int number)
+        public ActionResult GetRoom(string hotelId, string roomId)
         {
-            var room = _service.GetRoom(hotelId, number);
+            var room = _service.GetRoom(hotelId, roomId);
             if (room == null)
             {
                 NotFound();
@@ -114,7 +114,7 @@ namespace HotelAPI.Controllers
         }
 
         [HttpGet("rooms/filtred/")]
-        public ActionResult<List<Room>> GetFiltredRooms(
+        public ActionResult<List<RoomHotelViewModel>> GetFiltredRooms(
             [FromQuery] string city,
             [FromQuery] string phrase,
             [FromQuery] int bedForOne,

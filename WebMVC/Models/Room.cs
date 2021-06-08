@@ -9,8 +9,9 @@ namespace WebMVC.Models
 {
     public class Room
     {
-        [BsonElement("Number")]
-        public int Number { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         [BsonElement("BedForOne")]
         public int BedForOne { get; set; }
         [BsonElement("BedForTwo")]

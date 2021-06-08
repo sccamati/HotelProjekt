@@ -190,7 +190,7 @@ public async Task<Room> GetRoom(string hotelId, int number)
         }
         */
 
-        public async Task<ActionResult<List<Room>>> GetFiltredRooms(
+        public async Task<ActionResult<List<RoomHotelViewModel>>> GetFiltredRooms(
             string city,
             string phrase,
             int bedForOne,

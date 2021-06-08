@@ -30,6 +30,6 @@ namespace WebMVC.Services
 
         Task<List<Room>> GetRooms(string hotelId);
 
-        Task<List<Room>> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, string standard, string dateStart, string dateEnd);
+        Task<List<RoomHotelViewModel>> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, string standard, string dateStart, string dateEnd);
     }
 }

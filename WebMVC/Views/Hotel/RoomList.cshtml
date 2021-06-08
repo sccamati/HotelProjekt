@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebMVC.Models.Room>
+﻿@model IEnumerable<WebMVC.Models.RoomHotelViewModel>
 
 @{
     ViewData["Title"] = "View";
@@ -33,25 +33,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Number)
+                @Html.DisplayNameFor(model => model.Room.BedForOne)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BedForOne)
+                @Html.DisplayNameFor(model => model.Room.BedForTwo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BedForTwo)
+                @Html.DisplayNameFor(model => model.Room.NumberOfGuests)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfGuests)
+                @Html.DisplayNameFor(model => model.Room.Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.Room.Standard)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Standard)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Room.Description)
             </th>
             <th></th>
         </tr>
@@ -61,28 +58,25 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Number)
+                    @Html.DisplayFor(modelItem => item.Room.BedForOne)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BedForOne)
+                    @Html.DisplayFor(modelItem => item.Room.BedForTwo)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BedForTwo)
+                    @Html.DisplayFor(modelItem => item.Room.NumberOfGuests)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.NumberOfGuests)
+                    @Html.DisplayFor(modelItem => item.Room.Price)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    @Html.DisplayFor(modelItem => item.Room.Standard)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Standard)
+                    @Html.DisplayFor(modelItem => item.Room.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.ActionLink("Details", "Details", new { id=item.hotelId, number=item.Number })
+                    @Html.ActionLink("Details", "Details", new { id=item.HotelId, number=item.Room.Id })
                 </td>
             </tr>
         }

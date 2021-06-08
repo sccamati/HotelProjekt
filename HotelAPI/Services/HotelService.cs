@@ -57,17 +57,17 @@ namespace HotelAPI.Services
             return room;
         }
 
-        public Hotel DeleteRoom(string hotelId, int number)
+        public Hotel DeleteRoom(string hotelId, string roomId)
         {
             var itemFilter = Builders<Hotel>.Filter.Eq(h => h.Id, hotelId);
-            var updateBuilder = Builders<Hotel>.Update.PullFilter(h => h.Rooms, Builders<Room>.Filter.Eq("Number", number));
+            var updateBuilder = Builders<Hotel>.Update.PullFilter(h => h.Rooms, Builders<Room>.Filter.Eq("Id", roomId));
             var filter = new BsonDocument("username", "bodrum");
             hotels.UpdateOneAsync(itemFilter, updateBuilder, new UpdateOptions() { IsUpsert = true }).Wait();
 
             return hotels.Find<Hotel>(hotel => hotel.Id.Equals(hotelId)).FirstOrDefault();
         }
 
-        public Room GetRoom(string hotelId, int number) => hotels.Find(h => h.Id.Equals(hotelId)).FirstOrDefault().Rooms.Find(r => r.Number == number);
+        public Room GetRoom(string hotelId, string roomId) => hotels.Find(h => h.Id.Equals(hotelId)).FirstOrDefault().Rooms.Find(r => r.Id == roomId);
 
         public List<Room> GetRooms(string hotelId) => hotels.Find(h => h.Id.Equals(hotelId)).FirstOrDefault().Rooms.ToList();
 
@@ -85,7 +85,7 @@ namespace HotelAPI.Services
             return rooms;
         }
 
-        public List<Room> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, string standard)
+        public List<RoomHotelViewModel> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, string standard)
         {
             List<Hotel> hs = new List<Hotel>();
 
@@ -97,32 +97,35 @@ namespace HotelAPI.Services
             if (!String.IsNullOrEmpty(phrase))
                 hs = hs.Where(h => h.Name.Contains(phrase)).ToList();
 
-            List<Room> rooms = new List<Room>();
+            List<RoomHotelViewModel> roomHotelViewModels = new List<RoomHotelViewModel>();
             
             foreach (var h in hs)
                 foreach (var r in h.Rooms)
-                    rooms.Add(r);
+                {
+                    RoomHotelViewModel roomHotelViewModel = new RoomHotelViewModel { HotelId = h.Id, Room = r };
+                    roomHotelViewModels.Add(roomHotelViewModel);
+                }
 
             if (bedForOne > 0)
-                rooms = rooms.Where(r => r.BedForOne == bedForOne).ToList();
+                roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.BedForOne == bedForOne).ToList();
 
             if (bedForTwo > 0)
-                rooms = rooms.Where(r => r.BedForTwo == bedForTwo).ToList();
+                roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.BedForTwo == bedForTwo).ToList();
 
             if (price > 0)
-                rooms = rooms.Where(r => r.Price == price).ToList();
+                roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.Price == price).ToList();
 
             if (bedForOne > 0)
-                rooms = rooms.Where(r => r.BedForOne == bedForOne).ToList();
+                roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.BedForOne == bedForOne).ToList();
 
             if (!String.IsNullOrEmpty(standard))
             {
                 if (standard == "Standard")
-                    rooms = rooms.Where(r => r.Standard == STANDARD.Standard).ToList();
-                else 
-                    rooms = rooms.Where(r => r.Standard == STANDARD.Exclusive).ToList();
+                    roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.Standard == STANDARD.Standard).ToList();
+                else
+                    roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.Standard == STANDARD.Exclusive).ToList();
             }
-            return rooms;
+            return roomHotelViewModels;
         }
     }
 }
