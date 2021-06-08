@@ -114,13 +114,14 @@ namespace HotelAPI.Controllers
         }
 
         [HttpGet("rooms/filtred/")]
-        public ActionResult<List<Room>> GetFiltredRooms()
-        {
-            return _service.GetFiltredRooms();
-        }
-
-        [HttpPost("rooms/filtred/{city}&{phrase}&{bedForOne}&{bedForTwo}&{numberOfGuests}&{price}&{standard}")]
-        public ActionResult<List<Room>> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
+        public ActionResult<List<Room>> GetFiltredRooms(
+            [FromQuery] string city,
+            [FromQuery] string phrase,
+            [FromQuery] int bedForOne,
+            [FromQuery] int bedForTwo,
+            [FromQuery] int numberOfGuests,
+            [FromQuery] decimal price,
+            [FromQuery] int standard)
         {
             return _service.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);
         }

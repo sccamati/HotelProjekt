@@ -29,7 +29,7 @@ namespace WebMVC.Config
             public static string GetRoom(string id, int number) => $"https://localhost:44316/api/Hotel/room/{id}&{number}";
             public static string GetRooms(string id) => $"https://localhost:44316/api/Hotel/rooms/all/{id}";
             public static string GetFiltredRooms(string city, string phrase, int? bedForOne, int? bedForTwo, int? numberOfGuests, decimal? price, int? standard)
-                => $"https://localhost:44316/api/Hotel/rooms/filtred/{city}{phrase}{bedForOne}{bedForTwo}{numberOfGuests}{price}{standard}";
+                => $"https://localhost:44316/api/Hotel/rooms/filtred?city={city}&phrase={phrase}&bedForOne={bedForOne}&bedForTwo={bedForTwo}&numberOfGuests={numberOfGuests}&price={price}&standard={standard}";
         }
 
         public class UserOperations

@@ -189,9 +189,7 @@ public async Task<Room> GetRoom(string hotelId, int number)
             });
         }
         */
-        
 
-        [HttpPost("rooms/filtred/{city}&{phrase}&{bedForOne}&{bedForTwo}&{numberOfGuests}&{price}&{standard}")]
         public async Task<ActionResult<List<Room>>> GetFiltredRooms(
             string city,
             string phrase,

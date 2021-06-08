@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -160,16 +161,18 @@ public async Task<Room> GetRoom(string hotelId, int number)
             });
         }
 
+        [HttpGet("rooms/filtred/")]
         public async Task<List<Room>> GetFiltredRooms(
-            string city,
-            string phrase,
-            int bedForOne,
-            int bedForTwo,
-            int numberOfGuests,
-            decimal price,
-            int standard)
+            [FromQuery] string city,
+            [FromQuery] string phrase,
+            [FromQuery] int bedForOne,
+            [FromQuery] int bedForTwo,
+            [FromQuery] int numberOfGuests,
+            [FromQuery] decimal price,
+            [FromQuery] int standard)
         {
             var url = UrlsConfig.HotelOperations.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);
+            
             var response = await _apiClient.GetAsync(url);
 
             response.EnsureSuccessStatusCode();
