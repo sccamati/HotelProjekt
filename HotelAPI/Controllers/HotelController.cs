@@ -121,7 +121,7 @@ namespace HotelAPI.Controllers
             [FromQuery] int bedForTwo,
             [FromQuery] int numberOfGuests,
             [FromQuery] decimal price,
-            [FromQuery] int standard)
+            [FromQuery] string standard)
         {
             return _service.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);
         }

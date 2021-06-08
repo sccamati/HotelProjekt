@@ -161,7 +161,6 @@ public async Task<Room> GetRoom(string hotelId, int number)
             });
         }
 
-        [HttpGet("rooms/filtred/")]
         public async Task<List<Room>> GetFiltredRooms(
             [FromQuery] string city,
             [FromQuery] string phrase,
@@ -169,9 +168,12 @@ public async Task<Room> GetRoom(string hotelId, int number)
             [FromQuery] int bedForTwo,
             [FromQuery] int numberOfGuests,
             [FromQuery] decimal price,
-            [FromQuery] int standard)
+            [FromQuery] string standard,
+            [FromQuery] string dateStart,
+            [FromQuery] string dateEnd
+            )
         {
-            var url = UrlsConfig.HotelOperations.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);
+            var url = UrlsConfig.HotelOperations.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);
             
             var response = await _apiClient.GetAsync(url);
 

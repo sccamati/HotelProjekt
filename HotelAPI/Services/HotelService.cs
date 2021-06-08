@@ -85,7 +85,7 @@ namespace HotelAPI.Services
             return rooms;
         }
 
-        public List<Room> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
+        public List<Room> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, string standard)
         {
             List<Hotel> hs = new List<Hotel>();
 
@@ -115,11 +115,13 @@ namespace HotelAPI.Services
             if (bedForOne > 0)
                 rooms = rooms.Where(r => r.BedForOne == bedForOne).ToList();
 
-            if (standard == 0)
-                rooms = rooms.Where(r => r.Standard == STANDARD.Standard).ToList();
-            else if (standard == 1)
-                rooms = rooms.Where(r => r.Standard == STANDARD.Exclusive).ToList();
-
+            if (!String.IsNullOrEmpty(standard))
+            {
+                if (standard == "Standard")
+                    rooms = rooms.Where(r => r.Standard == STANDARD.Standard).ToList();
+                else 
+                    rooms = rooms.Where(r => r.Standard == STANDARD.Exclusive).ToList();
+            }
             return rooms;
         }
     }

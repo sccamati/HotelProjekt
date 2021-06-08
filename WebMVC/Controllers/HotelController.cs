@@ -197,9 +197,15 @@ public async Task<Room> GetRoom(string hotelId, int number)
             int bedForTwo,
             int numberOfGuests,
             decimal price,
-            int standard)
+            string standard,
+            string dateStart,
+            string dateEnd)
         {
-            var res = await _service.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);
+            List<STANDARD> sTANDARDs = new List<STANDARD>();
+            sTANDARDs.Add(STANDARD.Standard);
+            sTANDARDs.Add(STANDARD.Exclusive);
+            ViewBag.Standard = sTANDARDs;
+            var res = await _service.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);
             ViewBag.empty = "";
             if (res == null)
             {
