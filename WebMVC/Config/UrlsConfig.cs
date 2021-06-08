@@ -19,7 +19,7 @@ namespace WebMVC.Config
         public class HotelOperations
         {
             public static string CreateHotel() => $"https://localhost:44316/api/Hotel/";
-            public static string UpdateHotel(string id) => $"https://localhost:44316/api/Hotel/{id}";
+            public static string UpdateHotel() => $"https://localhost:44316/api/Hotel/";
             public static string DeleteHotel(string id) => $"https://localhost:44316/api/Hotel/{id}";
             public static string GetHotel(string id) => $"https://localhost:44316/api/Hotel/{id}";
             public static string GetHotels() => $"https://localhost:44316/api/Hotel/";
@@ -28,8 +28,8 @@ namespace WebMVC.Config
             public static string DeleteRoom(string id, int number) => $"https://localhost:44316/api/Hotel/room/{id}&{number}";
             public static string GetRoom(string id, int number) => $"https://localhost:44316/api/Hotel/room/{id}&{number}";
             public static string GetRooms(string id) => $"https://localhost:44316/api/Hotel/rooms/all/{id}";
-            public static string GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
-                => $"https://localhost:44316/api/Hotel/rooms/filtred{city}&{phrase}&{bedForOne}&{bedForTwo}&{numberOfGuests}&{price}&{standard}";
+            public static string GetFiltredRooms(string city, string phrase, int? bedForOne, int? bedForTwo, int? numberOfGuests, decimal? price, int? standard)
+                => $"https://localhost:44316/api/Hotel/rooms/filtred/{city}{phrase}{bedForOne}{bedForTwo}{numberOfGuests}{price}{standard}";
         }
 
         public class UserOperations

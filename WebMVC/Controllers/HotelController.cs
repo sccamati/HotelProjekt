@@ -26,7 +26,7 @@ namespace WebMVC.Controllers
             _accessor = accessor;
         }
 
-        /*public async Task<bool> CreateHotel(Hotel hotel)
+       /* public async Task<ActionResult<bool>> CreateHotel(Hotel hotel)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.HotelOperations.CreateHotel();
@@ -35,57 +35,98 @@ namespace WebMVC.Controllers
 
             return response.StatusCode != HttpStatusCode.BadRequest;
         }
-
-        public async Task<Hotel> UpdateHotel(string id, Hotel hotel)
-        {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.UpdateHotel(id);
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Hotel>(hotelResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-        }
-
-        public async Task<bool> DeleteHotel(string id)
-        {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.DeleteHotel(id);
-            var response = await _apiClient.DeleteAsync(url);
-
-            return response.StatusCode != HttpStatusCode.BadRequest;
-        }
-
-        public async Task<Hotel> GetHotel(string id)
-        {
-            var url = UrlsConfig.HotelOperations.GetHotel(id);
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Hotel>(hotelResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-        }
         */
+        [HttpPut]
+        public async Task<ActionResult<Hotel>> UpdateHotel(Hotel hotel)
+        {
+            var hotels = await _service.UpdateHotel(hotel);
+            ViewBag.empty = "";
+            if (hotels == null)
+            {
+                ViewBag.empty = "No hotel found";
+            }
+
+            return View("HotelEdit", hotels);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> EditHotel(string id)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest("Need valid user id");
+            }
+
+            var res = await _service.GetHotel(id);
+
+            if (res == null)
+            {
+                return BadRequest($"No user found for id {id}");
+            }
+            return View("HotelEdit", res);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditHotel(Hotel hotel)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+
+            var res = await _service.UpdateHotel(hotel);
+            if (res == null)
+            {
+                return BadRequest($"Error wbile editing");
+            }
+            return RedirectToAction("GetHotels");
+        }
+
+
+        [HttpGet("{id:length(24)}")]
+        public async Task<ActionResult> DeleteHotel(string id)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+
+            var res = await _service.DeleteHotel(id);
+            if (!res)
+            {
+                return RedirectToAction("GetHotels");
+            }
+            return RedirectToAction("GetHotels");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<Hotel>> GetHotel(string id)
+        {
+            var hotels = await _service.GetHotel(id);
+            ViewBag.empty = "";
+            if (hotels == null)
+            {
+                ViewBag.empty = "No hotel found";
+            }
+
+            return View("HotelDetails", hotels);
+        }
 
         [HttpGet]
         public async Task<ActionResult<List<Hotel>>> GetHotels()
         {
             var hotels = await _service.GetHotels();
-
+            ViewBag.empty = "";
             if (hotels == null)
             {
-                return BadRequest($"0 reservations");
+                ViewBag.empty = "empty";
             }
 
-            return View("ListHotels", hotels);
+            return View("HotelList", hotels);
         }
         /*
         public async Task<List<Hotel>> GetOwnerHotels(string ownerId)
@@ -147,34 +188,27 @@ public async Task<Room> GetRoom(string hotelId, int number)
                 PropertyNameCaseInsensitive = true
             });
         }
-
-        public async Task<List<Room>> GetRooms(string hotelId)
-        {
-            var url = UrlsConfig.HotelOperations.GetRooms(hotelId);
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<Room>>(hotelResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-        }
-
-        public async Task<List<Room>> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
-        {
-            var url = UrlsConfig.HotelOperations.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<Room>>(hotelResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-        }
         */
+        
+
+        [HttpPost("rooms/filtred/{city}&{phrase}&{bedForOne}&{bedForTwo}&{numberOfGuests}&{price}&{standard}")]
+        public async Task<ActionResult<List<Room>>> GetFiltredRooms(
+            string city,
+            string phrase,
+            int bedForOne,
+            int bedForTwo,
+            int numberOfGuests,
+            decimal price,
+            int standard)
+        {
+            var res = await _service.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);
+            ViewBag.empty = "";
+            if (res == null)
+            {
+                ViewBag.empty = "empty";
+            }
+
+            return View("RoomList", res);
+        }
     }
 }

@@ -29,9 +29,9 @@ namespace HotelAPI.Services
             return hotel;
         }
 
-        public ReplaceOneResult UpdateHotel(string id, Hotel hotel)
+        public ReplaceOneResult UpdateHotel(Hotel hotel)
         {
-            return hotels.ReplaceOne(h => h.Id == id, hotel);
+            return hotels.ReplaceOne(h => h.Id == hotel.Id, hotel);
         }
 
         public DeleteResult DeleteHotel(string id)
@@ -71,6 +71,19 @@ namespace HotelAPI.Services
 
         public List<Room> GetRooms(string hotelId) => hotels.Find(h => h.Id.Equals(hotelId)).FirstOrDefault().Rooms.ToList();
 
+        public List<Room> GetFiltredRooms()
+        {
+            List<Hotel> hs = new List<Hotel>();
+
+            hs = hotels.Find(h => true).ToList();
+
+            List<Room> rooms = new List<Room>();
+
+            foreach (var h in hs)
+            rooms.AddRange(h.Rooms);
+
+            return rooms;
+        }
 
         public List<Room> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
         {

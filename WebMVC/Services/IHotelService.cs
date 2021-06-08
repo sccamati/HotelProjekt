@@ -11,7 +11,7 @@ namespace WebMVC.Services
         //Hotels CRUD
         Task<bool> CreateHotel(Hotel hotel);
         
-        Task<Hotel> UpdateHotel(string id, Hotel hotel);
+        Task<Hotel> UpdateHotel(Hotel hotel);
         
         Task<bool> DeleteHotel(string id);
 

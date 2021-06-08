@@ -1,0 +1,117 @@
+﻿@model WebMVC.Models.Hotel
+
+@{
+    ViewData["Title"] = "HotelDetails";
+}
+
+<h1>HotelDetails</h1>
+
+<div>
+    <h4>Hotel</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Rate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Rate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OwnerID)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OwnerID)
+        </dd>
+    </dl>
+    
+    @if (Model.Rooms == null)
+    {
+        <p>There are no rooms</p>
+    }
+    else
+    {
+        <h2>Rooms</h2>
+
+    @foreach (var item in Model.Rooms)
+    {
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(i => item.Number)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(i => item.Number)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(i => item.BedForOne)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(i => item.BedForOne)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(i => item.BedForTwo)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(i => item.BedForTwo)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(i => item.NumberOfGuests)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(i => item.NumberOfGuests)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(i => item.Price)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(i => item.Price)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(i => item.Standard)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(i => item.Standard)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(i => item.Description)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(i => item.Description)
+    </dd>
+    <dt class="col-sm-2">
+        Delete
+    </dt>
+    <dd class="col-sm-10">
+        @Html.ActionLink("Delete", "DeleteRoom", new { id = Model.Id, number = item.Number })
+    </dd>
+</dl>
+    }
+    }
+</div>
+<div>
+    @Html.ActionLink("Edit", "EditHotel", new { id = Model.Id }) |
+    @Html.ActionLink("Back to list", "GetHotels")
+</div>

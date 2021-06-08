@@ -28,9 +28,9 @@ namespace HotelAPI.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Hotel> UpdateHotel(string id, Hotel hotel)
+        public ActionResult<Hotel> UpdateHotel(Hotel hotel)
         {
-            if (_service.UpdateHotel(id, hotel).ModifiedCount == 0)
+            if (_service.UpdateHotel(hotel).ModifiedCount == 0)
             {
                 return NotFound();
             }
@@ -84,7 +84,7 @@ namespace HotelAPI.Controllers
             return Ok(room);
         }
 
-        [HttpPost("room/{id:length(24)}")]
+        [HttpDelete("room/{id:length(24)}")]
         public ActionResult<Hotel> DeleteRoom(string id, int number)
         {
             var h = _service.DeleteRoom(id, number);
@@ -111,10 +111,15 @@ namespace HotelAPI.Controllers
         public ActionResult<List<Room>> GetRooms(string hotelId)
         {
             return _service.GetRooms(hotelId);
-        }      
-        
+        }
 
-        [HttpGet("rooms/filtred")]
+        [HttpGet("rooms/filtred/")]
+        public ActionResult<List<Room>> GetFiltredRooms()
+        {
+            return _service.GetFiltredRooms();
+        }
+
+        [HttpPost("rooms/filtred/{city}&{phrase}&{bedForOne}&{bedForTwo}&{numberOfGuests}&{price}&{standard}")]
         public ActionResult<List<Room>> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
         {
             return _service.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);

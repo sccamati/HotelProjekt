@@ -34,11 +34,12 @@ namespace WebMVC.Services
             return response.StatusCode != HttpStatusCode.BadRequest;
         }
 
-        public async Task<Hotel> UpdateHotel(string id, Hotel hotel)
+        public async Task<Hotel> UpdateHotel(Hotel hotel)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.UpdateHotel(id);
-            var response = await _apiClient.GetAsync(url);
+            var url = UrlsConfig.HotelOperations.UpdateHotel();
+            var content = new StringContent(JsonSerializer.Serialize(hotel), System.Text.Encoding.UTF8, "application/json");
+            var response = await _apiClient.PutAsync(url, content);
 
             response.EnsureSuccessStatusCode();
 
@@ -54,8 +55,7 @@ namespace WebMVC.Services
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.HotelOperations.DeleteHotel(id);
             var response = await _apiClient.DeleteAsync(url);
-
-            return response.StatusCode != HttpStatusCode.BadRequest;
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
         public async Task<Hotel> GetHotel(string id)
@@ -160,7 +160,14 @@ public async Task<Room> GetRoom(string hotelId, int number)
             });
         }
 
-        public async Task<List<Room>> GetFiltredRooms(string city, string phrase, int bedForOne, int bedForTwo, int numberOfGuests, decimal price, int standard)
+        public async Task<List<Room>> GetFiltredRooms(
+            string city,
+            string phrase,
+            int bedForOne,
+            int bedForTwo,
+            int numberOfGuests,
+            decimal price,
+            int standard)
         {
             var url = UrlsConfig.HotelOperations.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard);
             var response = await _apiClient.GetAsync(url);
