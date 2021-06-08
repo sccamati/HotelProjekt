@@ -40,21 +40,6 @@ namespace WebMVC.Services
             return response.StatusCode == HttpStatusCode.OK;
         }
 
-        public async Task<List<User>> GetUsersAsync()
-        {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.UserOperations.Get();
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var reservationResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<User>>(reservationResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-        }
-
         public async Task<User> GetUserAsync(string id)
         {
 
@@ -81,6 +66,21 @@ namespace WebMVC.Services
 
             var userResponse = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<User>(userResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        }
+
+        public async Task<List<User>> GetUsersAsync(string email)
+        {
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var url = UrlsConfig.UserOperations.Get(email);
+            var response = await _apiClient.GetAsync(url);
+
+            response.EnsureSuccessStatusCode();
+
+            var reservationResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<User>>(reservationResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });

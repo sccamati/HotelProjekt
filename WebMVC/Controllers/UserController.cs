@@ -41,7 +41,7 @@ namespace WebMVC.Controllers
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult> Delete(string id)
         {
-            
+
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
@@ -62,7 +62,7 @@ namespace WebMVC.Controllers
         [HttpGet]
         public async Task<ActionResult<User>> GetUser(string id)
         {
-            
+
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
@@ -82,13 +82,14 @@ namespace WebMVC.Controllers
             return View("UserDetails", res);
         }
         [HttpGet]
-        public async Task<ActionResult<List<User>>> GetUsers()
+        public async Task<ActionResult<List<User>>> GetUsers(string email)
         {
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
-            var res = await _userService.GetUsersAsync();
+
+            var res = await _userService.GetUsersAsync(email);
 
             if (res == null)
             {
@@ -97,6 +98,7 @@ namespace WebMVC.Controllers
 
             return View("UserList", res);
         }
+
         [HttpGet]
         public async Task<ActionResult> Edit(string id)
         {
@@ -136,7 +138,7 @@ namespace WebMVC.Controllers
         }
 
         [HttpGet]
-        public  ActionResult Register()
+        public ActionResult Register()
         {
             ViewBag.register = "";
             return View("RegisterUser");

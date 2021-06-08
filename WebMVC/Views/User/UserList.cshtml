@@ -5,22 +5,26 @@
 }
 
 <h1>UserList</h1>
-
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+@using (Html.BeginForm("GetUsers", "User", FormMethod.Get))
+{
+
+<div class="form-inline card-header">
+    <label class="control-label float-left ml-3">Email</label>
+    @Html.TextBox("email", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3" })
+    <input class="btn btn-primary float-left ml-3" type="submit" value="Search" />
+</div>
+}
+
+
 <h2>@ViewBag.info</h2>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Role)
@@ -33,19 +37,13 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Password)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Role)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id, }) |
                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 </td>

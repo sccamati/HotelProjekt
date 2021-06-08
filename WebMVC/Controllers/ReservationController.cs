@@ -89,10 +89,10 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
             var res = await _reservationService.GetAllReservationsAsync();
-
+            ViewBag.empty = "";
             if (res == null)
             {
-                return BadRequest($"0 reservations");
+                ViewBag.empty = "0 reservations";
             }
 
             return View("ListRes",res);
@@ -110,6 +110,23 @@ namespace WebMVC.Controllers
             if (res.Count == 0)
             {
                 @ViewBag.empty = "You don't have any reservations";
+            }
+
+            return View("ListRes", res);
+        }
+
+        [HttpGet("Reservation/{id:length(24)}")]
+        public async Task<ActionResult<List<Reservation>>> GetUsersReservations(string id)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+            var res = await _reservationService.GetUsersReservations(id);
+            @ViewBag.empty = "";
+            if (res.Count == 0)
+            {
+                @ViewBag.empty = "User don't have any reservations";
             }
 
             return View("ListRes", res);
