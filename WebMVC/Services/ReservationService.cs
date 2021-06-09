@@ -8,6 +8,7 @@ using WebMVC.Config;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
+using System.Net;
 
 namespace WebMVC.Services
 {
@@ -21,20 +22,14 @@ namespace WebMVC.Services
             _accessor = accessor;
         }
 
-        public async Task<Reservation> CreateReservationAsync(Reservation reservation)
+        public async Task<bool> CreateReservationAsync(Reservation reservation)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.Create();
             var content = new StringContent(JsonSerializer.Serialize(reservation), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync(url, content);
 
-            response.EnsureSuccessStatusCode();
-
-            var reservationResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Reservation>(reservationResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return response.StatusCode != HttpStatusCode.BadRequest;
         }
 
         public async Task<Reservation> DeleteReservationAsync(string id)

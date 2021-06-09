@@ -25,8 +25,8 @@ namespace WebMVC.Config
             public static string GetHotels() => $"https://localhost:44316/api/Hotel/";
             public static string GetOwnerHotels(string ownerId) => $"https://localhost:44316/api/Hotel/ownerHotels/{ownerId}";
             public static string CreateRoom(string id) => $"https://localhost:44316/api/Hotel/room/{id}";
-            public static string DeleteRoom(string id, int number) => $"https://localhost:44316/api/Hotel/room/{id}&{number}";
-            public static string GetRoom(string id, int number) => $"https://localhost:44316/api/Hotel/room/{id}&{number}";
+            public static string DeleteRoom(string hotelId, string roomId) => $"https://localhost:44316/api/Hotel/room/{hotelId}/{roomId}";
+            public static string GetRoom(string hotelId, string roomId) => $"https://localhost:44316/api/Hotel/room/{hotelId}/{roomId}";
             public static string GetRooms(string id) => $"https://localhost:44316/api/Hotel/rooms/all/{id}";
             public static string GetFiltredRooms(string city, string phrase, int? bedForOne, int? bedForTwo, int? numberOfGuests, decimal? price, string standard, string dateStart, string dateEnd)
                 => $"https://localhost:44316/api/Hotel/rooms/filtred?city={city}&phrase={phrase}&bedForOne={bedForOne}&bedForTwo={bedForTwo}&numberOfGuests={numberOfGuests}&price={price}&standard={standard}&dateStart={dateStart}&dateEnd={dateEnd}";

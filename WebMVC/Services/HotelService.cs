@@ -118,7 +118,7 @@ namespace WebMVC.Services
             });
         }
 
-    public async Task<Hotel> DeleteRoom(string hotelId, int number)
+    public async Task<Hotel> DeleteRoom(string hotelId, string number)
     {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.HotelOperations.DeleteRoom(hotelId, number);
@@ -133,7 +133,7 @@ namespace WebMVC.Services
             });
         }
 
-public async Task<Room> GetRoom(string hotelId, int number)
+public async Task<Room> GetRoom(string hotelId, string number)
         {
             var url = UrlsConfig.HotelOperations.GetRoom(hotelId, number);
             var response = await _apiClient.GetAsync(url);

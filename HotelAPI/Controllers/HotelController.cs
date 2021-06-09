@@ -84,7 +84,7 @@ namespace HotelAPI.Controllers
             return Ok(room);
         }
 
-        [HttpDelete("room/{id:length(24)}")]
+        [HttpDelete("room/{hotelId:length(24)}/{roomId:length(24)}")]
         public ActionResult<Hotel> DeleteRoom(string hotelId, string roomId)
         {
             var h = _service.DeleteRoom(hotelId, roomId);
@@ -95,7 +95,7 @@ namespace HotelAPI.Controllers
             return Ok();
         }
 
-        [HttpGet("room/{hotelId:length(24)}")]
+        [HttpGet("room/{hotelId:length(24)}/{roomId:length(24)}")]
         public ActionResult GetRoom(string hotelId, string roomId)
         {
             var room = _service.GetRoom(hotelId, roomId);

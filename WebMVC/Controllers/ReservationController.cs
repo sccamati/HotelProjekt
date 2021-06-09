@@ -17,23 +17,38 @@ namespace WebMVC.Controllers
         }
 
         private readonly IReservationService _reservationService;
+        private readonly IHotelService _hotelService;
         private readonly IHttpContextAccessor _accessor;
-        public ReservationController(IReservationService reservationService, IHttpContextAccessor accessor)
+        public ReservationController(IReservationService reservationService, IHotelService hotelService, IHttpContextAccessor accessor)
         {
             _reservationService = reservationService;
+            _hotelService = hotelService;
             _accessor = accessor;
         }
 
         // POST: ReservationController/Create
-        [HttpPost]
-        public ActionResult Create(Reservation reservation)
+        [HttpGet]
+        public async Task<ActionResult> Create(string hotelId, string roomId, DateTime startDate, DateTime endDate)
         {
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
-            _reservationService.CreateReservationAsync(reservation);
-            return Ok();
+
+            Room room = await _hotelService.GetRoom(hotelId, roomId);
+
+            Reservation reservation = new Reservation
+            {
+                HotelId = hotelId,
+                RoomId = room.Id,
+                UserId = _accessor.HttpContext.Session.GetString("ID"),
+                StartDate = startDate,
+                EndDate = endDate,
+                Price = room.Price
+            };
+            var res = await _reservationService.CreateReservationAsync(reservation);
+
+            return RedirectToAction("GetUsersReservations");
         }
 
         // POST: ReservationController/Delete/5
@@ -44,19 +59,20 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+            ViewBag.error = "";
             if (string.IsNullOrEmpty(id))
             {
-                return BadRequest("Need valid reservation id");
+                ViewBag.error = $"No reservation found for id {id}";
             }
 
             var res = await _reservationService.DeleteReservationAsync(id);
 
             if (res == null)
             {
-                return BadRequest($"No reservation found for id {id}");
+                ViewBag.error = $"No reservation found for id {id}";
             }
 
-            return Ok();
+            return RedirectToAction("GetUsersReservations");
         }
 
         [HttpGet]

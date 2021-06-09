@@ -24,9 +24,9 @@ namespace WebMVC.Services
         //Rooms CRUD        
         Task<Room> CreateRoom(string hotelId, Room room);
 
-        Task<Hotel> DeleteRoom(string hotelId, int number);
+        Task<Hotel> DeleteRoom(string hotelId, string number);
 
-        Task<Room> GetRoom(string hotelId, int number);
+        Task<Room> GetRoom(string hotelId, string number);
 
         Task<List<Room>> GetRooms(string hotelId);
 

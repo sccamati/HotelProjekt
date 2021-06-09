@@ -18,11 +18,11 @@ namespace WebMVC.Controllers
         }
 
         private readonly IHttpContextAccessor _accessor;
-        private readonly IHotelService _service;
+        private readonly IHotelService _hotelService;
 
         public HotelController(IHotelService hotelService, IHttpContextAccessor accessor)
         {
-            _service = hotelService;
+            _hotelService = hotelService;
             _accessor = accessor;
         }
 
@@ -39,7 +39,7 @@ namespace WebMVC.Controllers
         [HttpPut]
         public async Task<ActionResult<Hotel>> UpdateHotel(Hotel hotel)
         {
-            var hotels = await _service.UpdateHotel(hotel);
+            var hotels = await _hotelService.UpdateHotel(hotel);
             ViewBag.empty = "";
             if (hotels == null)
             {
@@ -61,7 +61,7 @@ namespace WebMVC.Controllers
                 return BadRequest("Need valid user id");
             }
 
-            var res = await _service.GetHotel(id);
+            var res = await _hotelService.GetHotel(id);
 
             if (res == null)
             {
@@ -78,7 +78,7 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
 
-            var res = await _service.UpdateHotel(hotel);
+            var res = await _hotelService.UpdateHotel(hotel);
             if (res == null)
             {
                 return BadRequest($"Error wbile editing");
@@ -95,7 +95,7 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
 
-            var res = await _service.DeleteHotel(id);
+            var res = await _hotelService.DeleteHotel(id);
             if (!res)
             {
                 return RedirectToAction("GetHotels");
@@ -106,7 +106,7 @@ namespace WebMVC.Controllers
         [HttpGet]
         public async Task<ActionResult<Hotel>> GetHotel(string id)
         {
-            var hotels = await _service.GetHotel(id);
+            var hotels = await _hotelService.GetHotel(id);
             ViewBag.empty = "";
             if (hotels == null)
             {
@@ -119,7 +119,7 @@ namespace WebMVC.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Hotel>>> GetHotels()
         {
-            var hotels = await _service.GetHotels();
+            var hotels = await _hotelService.GetHotels();
             ViewBag.empty = "";
             if (hotels == null)
             {
@@ -205,7 +205,7 @@ public async Task<Room> GetRoom(string hotelId, int number)
             sTANDARDs.Add(STANDARD.Standard);
             sTANDARDs.Add(STANDARD.Exclusive);
             ViewBag.Standard = sTANDARDs;
-            var res = await _service.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);
+            var res = await _hotelService.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);
             ViewBag.empty = "";
             if (res == null)
             {
@@ -213,6 +213,19 @@ public async Task<Room> GetRoom(string hotelId, int number)
             }
 
             return View("RoomList", res);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<User>> GetRoomDetails(string hotelId, string roomId)
+        {
+
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+            var res = await _hotelService.GetRoom(hotelId, roomId);
+
+            return View("RoomDetails", res);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<WebMVC.Models.RoomHotelViewModel>
-
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "View";
 }
@@ -76,9 +77,22 @@
                     @Html.DisplayFor(modelItem => item.Room.Description)
                 </td>
                 <td>
-                    @Html.ActionLink("Details", "Details", new { id=item.HotelId, number=item.Room.Id })
+                    @Html.ActionLink("Details", "GetRoomDetails", new { hotelId = item.HotelId, roomId = item.Room.Id, }, new { @class = "btn btn-primary" })
+                    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "User")
+                    {
+                        <button class="btn btn-success" onclick="book('@item.HotelId', '@item.Room.Id')">Book</button>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    function book(hotelId, roomId) {
+        $.get('@Url.Action("Create", "Reservation")', { hotelId: hotelId, roomId: roomId, startDate: $('#dateStart').val(), endDate: $('#dateEnd').val() }, function (data) {
+            window.location.replace('@Url.Action("GetUsersReservations", "Reservation")');
+        });
+
+    }
+</script>
