@@ -52,7 +52,7 @@ namespace WebMVC.Controllers
         }
 
         // POST: ReservationController/Delete/5
-        [HttpDelete("{id:length(24)}")]
+        [HttpGet]
         public async Task<ActionResult> Delete(string id)
         {
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
@@ -67,7 +67,7 @@ namespace WebMVC.Controllers
 
             var res = await _reservationService.DeleteReservationAsync(id);
 
-            if (res == null)
+            if (!res)
             {
                 ViewBag.error = $"No reservation found for id {id}";
             }
@@ -76,7 +76,7 @@ namespace WebMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Reservation>> GetReservation(string id)
+        public async Task<ActionResult<Reservation>> Details(string id)
         {
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {

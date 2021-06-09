@@ -32,18 +32,13 @@ namespace WebMVC.Services
             return response.StatusCode != HttpStatusCode.BadRequest;
         }
 
-        public async Task<Reservation> DeleteReservationAsync(string id)
+        public async Task<bool> DeleteReservationAsync(string id)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.Delete(id);
-            var response = await _apiClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
+            var response = await _apiClient.DeleteAsync(url);
 
-            var reservationResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Reservation>(reservationResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return response.StatusCode != HttpStatusCode.BadRequest;
         }
 
         public async Task<List<Reservation>> GetAllReservationsAsync()
