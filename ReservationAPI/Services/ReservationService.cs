@@ -28,6 +28,8 @@ namespace ReservationAPI.Services
 
         public Reservation Create(Reservation reservation)
         {
+            reservation.ReservationDate = DateTime.Now;
+            reservation.Price *= (reservation.EndDate - reservation.StartDate).Days;
             _reservations.InsertOne(reservation);
             return reservation;
         }

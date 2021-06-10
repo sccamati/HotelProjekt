@@ -26,6 +26,8 @@ namespace WebMVC.Models
         public DateTime EndDate { get; set; }
         [BsonElement("Price")]
         public decimal Price { get; set; }
-
+        [BsonRepresentation(BsonType.DateTime)]
+        [BsonElement("ReservationDate")]
+        public DateTime ReservationDate { get; set; }
     }
 }

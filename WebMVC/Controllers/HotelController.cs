@@ -218,11 +218,6 @@ public async Task<Room> GetRoom(string hotelId, int number)
         [HttpGet]
         public async Task<ActionResult<User>> GetRoomDetails(string hotelId, string roomId)
         {
-
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
-            {
-                return RedirectToAction("Index", "Authorize");
-            }
             var res = await _hotelService.GetRoom(hotelId, roomId);
 
             return View("RoomDetails", res);

@@ -5,19 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReservationAPI.Models
+namespace WebMVC.Models
 {
-    public class Reservation
+    public class ReservationListViewModel
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        [BsonElement("HotelId")]
-        public string HotelId { get; set; }
-        [BsonElement("RoomID")]
-        public string RoomId { get; set; }
-        [BsonElement("UserId")]
-        public string UserId { get; set; }
+        public string HotelName { get; set; }
+        public string  City { get; set; }
         [BsonRepresentation(BsonType.DateTime)]
         [BsonElement("StartDate")]
         public DateTime StartDate { get; set; }

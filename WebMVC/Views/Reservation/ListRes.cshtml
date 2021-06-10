@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<WebMVC.Models.Reservation>
-
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "View";
 }
@@ -12,18 +13,6 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.HotelId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.RoomId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserId)
-                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.StartDate)
                 </th>
@@ -41,18 +30,6 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HotelId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.RoomId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UserId)
-                    </td>
-                    <td>
                         @Html.DisplayFor(modelItem => item.StartDate)
                     </td>
                     <td>
@@ -62,8 +39,12 @@
                         @Html.DisplayFor(modelItem => item.Price)
                     </td>
                     <td>
-                        @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                        @Html.ActionLink("Delete", "Delete", "Reservation", new { id=item.Id })
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-primary"})
+
+                        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "User" && item.StartDate > DateTime.Now)
+                        {
+                            @Html.ActionLink("Delete", "Delete", "Reservation", new { id = item.Id }, new { @class = "btn btn-danger" })
+                        }
                     </td>
                 </tr>
             }
@@ -73,9 +54,9 @@
         </tbody>
     </table>
 }
-else 
-{ 
-<h3>@ViewBag.empty</h3>
+else
+{
+    <h3>@ViewBag.empty</h3>
 }
 
 
