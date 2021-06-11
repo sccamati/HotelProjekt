@@ -23,9 +23,13 @@ namespace IdentityAPI
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+            services.AddDiscoveryClient(Configuration);
+            services.AddControllers();
             services.AddAuthentication(s =>
             {
                 s.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -47,10 +51,6 @@ namespace IdentityAPI
             services.AddSingleton<IDatabaseSettings>(db => db.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             services.AddScoped<UserService>();
             services.AddScoped<IdentityService>();
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
-            services.AddMvc();
-            services.AddDiscoveryClient(Configuration);
-            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityAPI", Version = "v1" });

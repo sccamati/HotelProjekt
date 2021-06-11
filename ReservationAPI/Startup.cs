@@ -27,6 +27,9 @@ namespace ReservationAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+            services.AddDiscoveryClient(Configuration);
+            services.AddControllers();
             services.AddAuthentication(s =>
             {
                 s.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,9 +49,6 @@ namespace ReservationAPI
            });
             services.AddSingleton<IDatabaseSettings>(db => db.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             services.AddScoped<ReservationService>();
-            services.AddMvc();
-            services.AddDiscoveryClient(Configuration);
-            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ReservationAPI", Version = "v1" });
@@ -64,6 +64,7 @@ namespace ReservationAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReservationAPI v1"));
             }
+            app.UseDiscoveryClient();
 
             app.UseHttpsRedirection();
 
@@ -71,8 +72,6 @@ namespace ReservationAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseDiscoveryClient();
 
             app.UseEndpoints(endpoints =>
             {

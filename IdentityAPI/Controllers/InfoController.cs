@@ -37,14 +37,12 @@ namespace IdentityAPI.Controllers
     {
         public string ServiceName { get; set; }
         public string ServiceDescription { get; set; }
-        public string ServiceAddress { get; set; }
 
 
         public Info()
         {
-            ServiceName = "WeatherForecast";
-            ServiceDescription = "This is my weather forecast service. It gives a nice weather in your town.";
-            ServiceAddress = "https://localhost:5002/weatherforecast";
+            ServiceName = "IdentityAPI";
+            ServiceDescription = "This is my Identity service.";
         }
     }
 }
