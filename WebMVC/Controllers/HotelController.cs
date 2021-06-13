@@ -26,16 +26,28 @@ namespace WebMVC.Controllers
             _accessor = accessor;
         }
 
-       /* public async Task<ActionResult<bool>> CreateHotel(Hotel hotel)
+        [HttpGet]
+        public ActionResult CreateHotel()
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.CreateHotel();
-            var content = new StringContent(JsonSerializer.Serialize(hotel), System.Text.Encoding.UTF8, "application/json");
-            var response = await _apiClient.PostAsync(url, content);
-
-            return response.StatusCode != HttpStatusCode.BadRequest;
+            ViewBag.createHotel = "";
+            return View("HotelCreate");
         }
-        */
+
+        [HttpPost]
+        public async Task<ActionResult> CreateHotel(Hotel hotel)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+
+            hotel.OwnerID = _accessor.HttpContext.Session.GetString("ID");
+
+            await _hotelService.CreateHotel(hotel);
+            
+            return RedirectToAction("GetOwnerHotel", "Hotel", new { ownerId = _accessor.HttpContext.Session.GetString("ID") });
+        }
+        
         [HttpPut]
         public async Task<ActionResult<Hotel>> UpdateHotel(Hotel hotel)
         {
@@ -83,7 +95,7 @@ namespace WebMVC.Controllers
             {
                 return BadRequest($"Error wbile editing");
             }
-            return RedirectToAction("GetHotels");
+            return RedirectToAction("GetOwnerHotel", "Hotel", new { ownerId = _accessor.HttpContext.Session.GetString("ID") });
         }
 
 
@@ -107,11 +119,6 @@ namespace WebMVC.Controllers
         public async Task<ActionResult<Hotel>> GetHotel(string id)
         {
             var hotels = await _hotelService.GetHotel(id);
-            ViewBag.empty = "";
-            if (hotels == null)
-            {
-                ViewBag.empty = "No hotel found";
-            }
 
             return View("HotelDetails", hotels);
         }
@@ -128,67 +135,67 @@ namespace WebMVC.Controllers
 
             return View("HotelList", hotels);
         }
-        /*
-        public async Task<List<Hotel>> GetOwnerHotels(string ownerId)
+  
+        [HttpGet]
+        public async Task<ActionResult<List<Hotel>>> GetOwnerHotel(string ownerId)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.GetOwnerHotels(ownerId);
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<Hotel>>(hotelResponse, new JsonSerializerOptions
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
-                PropertyNameCaseInsensitive = true
-            });
+                return RedirectToAction("Index", "Authorize");
+            }
+            var hotels = await _hotelService.GetOwnerHotel(ownerId);
+            ViewBag.empty = "";
+            if (hotels == null)
+            {
+                ViewBag.empty = "empty";
+            }
+
+            return View("HotelOwnerList", hotels);
         }
 
         //Rooms CRUD        
-        public async Task<Room> CreateRoom(string hotelId, Room room)
+
+        [HttpGet]
+        public ActionResult CreateRoom(string hotelId)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.CreateRoom(hotelId);
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Room>(hotelResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            ViewBag.hotelId = hotelId;
+            return View("RoomCreate");
         }
 
-    public async Task<Hotel> DeleteRoom(string hotelId, int number)
-    {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.DeleteRoom(hotelId, number);
-            var response = await _apiClient.GetAsync(url);
 
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Hotel>(hotelResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-        }
-
-public async Task<Room> GetRoom(string hotelId, int number)
+        [HttpPost]
+        public async Task<ActionResult> CreateRoom(RoomHotelViewModel roomHotelViewModel)
         {
-            var url = UrlsConfig.HotelOperations.GetRoom(hotelId, number);
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Room>(hotelResponse, new JsonSerializerOptions
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
-                PropertyNameCaseInsensitive = true
-            });
+                return RedirectToAction("Index", "Authorize");
+            }
+            await _hotelService.CreateRoom(roomHotelViewModel);
+
+            return RedirectToAction("GetHotel", "Hotel", new { id = roomHotelViewModel.HotelId });
         }
-        */
+
+        public async Task<ActionResult> DeleteRoom(string hotelId, string roomId)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+
+            var res = await _hotelService.DeleteRoom(hotelId, roomId);
+            if (!res)
+            {
+                return RedirectToAction("GetHotel", "Hotel", new { id = hotelId });
+            }
+            return RedirectToAction("GetHotel", "Hotel", new { id = hotelId });
+        }
+
+        public async Task<ActionResult<RoomHotelViewModel>> GetRoom(string hotelId, string roomId)
+        {
+            var room = await _hotelService.GetRoom(hotelId, roomId);
+
+            return View("RoomDetails", room);
+        }
 
         public async Task<ActionResult<List<RoomHotelViewModel>>> GetFiltredRooms(
             string city,
@@ -216,7 +223,7 @@ public async Task<Room> GetRoom(string hotelId, int number)
         }
 
         [HttpGet]
-        public async Task<ActionResult<User>> GetRoomDetails(string hotelId, string roomId)
+        public async Task<ActionResult<RoomHotelViewModel>> GetRoomDetails(string hotelId, string roomId)
         {
             var res = await _hotelService.GetRoom(hotelId, roomId);
 

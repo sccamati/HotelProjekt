@@ -21,10 +21,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Hotel" asp-action="GetFiltredRooms">Pokoje</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Hotel" asp-action="GetFiltredRooms">Rooms</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Hotel" asp-action="GetHotels">Hotele</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Hotel" asp-action="GetHotels">Hotels</a>
                         </li>
                         @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
                         {
@@ -44,15 +44,20 @@
                             @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "User")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="GetUsersReservations">MyReservations</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="GetUsersReservations">My Reservations</a>
                                 </li>
 
+                            }
+
+                            @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner")
+                            {
+                                <li class="nav-item">
+                                    @Html.ActionLink("My Hotels", "GetOwnerHotel", "Hotel", new { ownerId = @HttpContextAccessor.HttpContext.Session.GetString("ID") }, new { @class = "nav-link text-dark" })
+                                </li>
                             }
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Authorize" asp-action="LogOut">LogOut</a>
                             </li>
-
-
                         }
                         else
                         {
@@ -64,8 +69,6 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Authorize" asp-action="Index">Login</a>
                             </li>
                         }
-
-
                     </ul>
                 </div>
             </div>

@@ -1,13 +1,12 @@
 ﻿@model WebMVC.Models.Hotel
-
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "HotelDetails";
 }
 
-<h1>HotelDetails</h1>
-
 <div>
-    <h4>Hotel</h4>
+    <h1>Hotel</h1>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -34,24 +33,25 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Rate)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OwnerID)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OwnerID)
-        </dd>
     </dl>
-    
+    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
+    {
+        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner" && Model.OwnerID == @HttpContextAccessor.HttpContext.Session.GetString("ID"))
+        {
+            @Html.ActionLink("Edit", "EditHotel", new { id = Model.Id }, new { @class = "btn btn-primary" })
+        }
+    }
+
     @if (Model.Rooms == null)
     {
         <p>There are no rooms</p>
     }
     else
     {
-        <h2>Rooms</h2>
+        <h3>Rooms</h3>
 
-    @foreach (var item in Model.Rooms)
-    {
+        @foreach (var item in Model.Rooms)
+        {
 <dl class="row">
     <dt class="col-sm-2">
         @Html.DisplayNameFor(i => item.BedForOne)
@@ -89,17 +89,42 @@
     <dd class="col-sm-10">
         @Html.DisplayFor(i => item.Description)
     </dd>
-    <dt class="col-sm-2">
-        Delete
-    </dt>
-    <dd class="col-sm-10">
-        @Html.ActionLink("Delete", "DeleteRoom", new { id = Model.Id, number = item.Id })
-    </dd>
-</dl>
+    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
+    {
+        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner" && Model.OwnerID == @HttpContextAccessor.HttpContext.Session.GetString("ID"))
+        {
+            <dt class="col-sm-2">
+                Delete
+            </dt>
+            <dd class="col-sm-10">
+                @Html.ActionLink("Delete", "DeleteRoom", new { hotelId = Model.Id, roomId = item.Id }, new { @class = "btn btn-primary" })
+            </dd>
+        }
     }
+</dl>
+        }
+    }
+
+    @if (@HttpContextAccessor.HttpContext.Session.GetString("ID") != null)
+    {
+        @if (@HttpContextAccessor.HttpContext.Session.GetString("ID") == Model.OwnerID)
+            @Html.ActionLink("Add room", "CreateRoom", new { hotelId = Model.Id }, new { @class = "btn btn-primary" })
     }
 </div>
 <div>
-    @Html.ActionLink("Edit", "EditHotel", new { id = Model.Id }) |
-    @Html.ActionLink("Back to list", "GetHotels")
+    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
+    {
+        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner" && Model.OwnerID == @HttpContextAccessor.HttpContext.Session.GetString("ID"))
+        {
+            @Html.ActionLink("Back to list", "GetOwnerHotel", new { ownerId = @HttpContextAccessor.HttpContext.Session.GetString("ID") })
+        }
+        else
+        {
+            @Html.ActionLink("Back to list", "GetHotels")
+        }
+    }
+    else
+    {
+        @Html.ActionLink("Back to list", "GetHotels")
+    }
 </div>

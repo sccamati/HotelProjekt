@@ -19,14 +19,14 @@ namespace WebMVC.Services
 
         Task<List<Hotel>> GetHotels();
 
-        Task<List<Hotel>> GetOwnerHotels(string ownerId);
+        Task<List<Hotel>> GetOwnerHotel(string ownerId);
 
         //Rooms CRUD        
-        Task<Room> CreateRoom(string hotelId, Room room);
+        Task<bool> CreateRoom(RoomHotelViewModel roomHotelViewModel);
 
-        Task<Hotel> DeleteRoom(string hotelId, string number);
+        Task<bool> DeleteRoom(string hotelId, string roomId);
 
-        Task<Room> GetRoom(string hotelId, string number);
+        Task<RoomHotelViewModel> GetRoom(string hotelId, string roomId);
 
         Task<List<Room>> GetRooms(string hotelId);
 

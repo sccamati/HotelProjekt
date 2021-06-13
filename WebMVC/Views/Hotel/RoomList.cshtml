@@ -7,9 +7,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <h1>View</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 @using (Html.BeginForm("GetFiltredRooms", "Hotel", FormMethod.Get))
 {
 
@@ -77,7 +74,7 @@
                     @Html.DisplayFor(modelItem => item.Room.Description)
                 </td>
                 <td>
-                    @Html.ActionLink("Details", "GetRoomDetails", new { hotelId = item.HotelId, roomId = item.Room.Id, }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Details", "GetRoom", new { hotelId = item.HotelId, roomId = item.Room.Id, }, new { @class = "btn btn-primary" })
                     @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "User")
                     {
                         <button class="btn btn-success book-btn" onclick="book('@item.HotelId', '@item.Room.Id')">Book</button>

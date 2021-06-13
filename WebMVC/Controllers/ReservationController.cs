@@ -35,16 +35,16 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
 
-            Room room = await _hotelService.GetRoom(hotelId, roomId);
+            RoomHotelViewModel room = await _hotelService.GetRoom(hotelId, roomId);
 
             Reservation reservation = new Reservation
             {
                 HotelId = hotelId,
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 UserId = _accessor.HttpContext.Session.GetString("ID"),
                 StartDate = startDate,
                 EndDate = endDate,
-                Price = room.Price
+                Price = room.Room.Price
             };
             var res = await _reservationService.CreateReservationAsync(reservation);
 

@@ -30,6 +30,8 @@ namespace HotelAPI.Controllers
         [HttpPut]
         public ActionResult<Hotel> UpdateHotel(Hotel hotel)
         {
+            var rooms = _service.GetHotel(hotel.Id).Rooms.ToList();
+            hotel.Rooms = rooms;
             if (_service.UpdateHotel(hotel).ModifiedCount == 0)
             {
                 return NotFound();
@@ -69,22 +71,22 @@ namespace HotelAPI.Controllers
             return _service.GetHotels();
         }
 
-        [HttpGet("/ownerHotels/{ownerId:length(24)}")]
+        [HttpGet("/ownerHotel/{ownerId:length(24)}")]
         public ActionResult<List<Hotel>> GetOwnerHotels(string ownerId)
         {
-            return _service.GetOwnerHotels(ownerId);
+            return _service.GetOwnerHotel(ownerId);
         }
 
         //Rooms CRUD        
 
-        [HttpPost("room/{hotelId:length(24)}")]
-        public ActionResult<Room> CreateRoom(string hotelId, Room room)
+        [HttpPost("room/")]
+        public ActionResult<RoomHotelViewModel> CreateRoom(RoomHotelViewModel roomHotelViewModel)
         {
-            var r = _service.CreateRoom(hotelId, room);
-            return Ok(room);
+            var r = _service.CreateRoom(roomHotelViewModel);
+            return Ok(roomHotelViewModel);
         }
 
-        [HttpDelete("room/{hotelId:length(24)}/{roomId:length(24)}")]
+        [HttpDelete("room/{hotelId:length(24)}/{roomId}")]
         public ActionResult<Hotel> DeleteRoom(string hotelId, string roomId)
         {
             var h = _service.DeleteRoom(hotelId, roomId);
@@ -95,7 +97,7 @@ namespace HotelAPI.Controllers
             return Ok();
         }
 
-        [HttpGet("room/{hotelId:length(24)}/{roomId:length(24)}")]
+        [HttpGet("room/{hotelId:length(24)}/{roomId}")]
         public ActionResult GetRoom(string hotelId, string roomId)
         {
             var room = _service.GetRoom(hotelId, roomId);

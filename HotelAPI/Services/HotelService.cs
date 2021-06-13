@@ -25,36 +25,34 @@ namespace HotelAPI.Services
 
         public Hotel CreateHotel(Hotel hotel)
         {
+            if (hotel.Rooms == null)
+            {
+                hotel.Rooms = new List<Room>();
+            }
             hotels.InsertOne(hotel);
             return hotel;
         }
 
-        public ReplaceOneResult UpdateHotel(Hotel hotel)
-        {
-            return hotels.ReplaceOne(h => h.Id == hotel.Id, hotel);
-        }
+        public ReplaceOneResult UpdateHotel(Hotel hotel) => hotels.ReplaceOne(h => h.Id == hotel.Id, hotel);
 
-        public DeleteResult DeleteHotel(string id)
-        {
-            return hotels.DeleteOne(h => h.Id == id);
-        }
+        public DeleteResult DeleteHotel(string id) => hotels.DeleteOne(h => h.Id == id);
 
         public Hotel GetHotel(string id) => hotels.Find<Hotel>(hotel => hotel.Id.Equals(id)).FirstOrDefault();
 
         public List<Hotel> GetHotels() => hotels.Find(hotel => true).ToList();
 
-        public List<Hotel> GetOwnerHotels(string ownerId) => hotels.Find(h => h.OwnerID.Equals(ownerId)).ToList();
+        public List<Hotel> GetOwnerHotel(string ownerId) => hotels.Find(h => h.OwnerID.Equals(ownerId)).ToList();
 
         //Rooms CRUD        
 
-        public Room CreateRoom(string hotelId, Room room)
+        public RoomHotelViewModel CreateRoom(RoomHotelViewModel roomHotelViewModel)
         {
-            var itemFilter = Builders<Hotel>.Filter.Eq(h => h.Id, hotelId);
-            var updateBuilder = Builders<Hotel>.Update.AddToSet(h => h.Rooms, room);
+            var itemFilter = Builders<Hotel>.Filter.Eq(h => h.Id, roomHotelViewModel.HotelId);
+            var updateBuilder = Builders<Hotel>.Update.AddToSet(h => h.Rooms, roomHotelViewModel.Room);
 
             hotels.UpdateOneAsync(itemFilter, updateBuilder, new UpdateOptions() { IsUpsert = true }).Wait();
 
-            return room;
+            return roomHotelViewModel;
         }
 
         public Hotel DeleteRoom(string hotelId, string roomId)
@@ -67,7 +65,11 @@ namespace HotelAPI.Services
             return hotels.Find<Hotel>(hotel => hotel.Id.Equals(hotelId)).FirstOrDefault();
         }
 
-        public Room GetRoom(string hotelId, string roomId) => hotels.Find(h => h.Id.Equals(hotelId)).FirstOrDefault().Rooms.Find(r => r.Id == roomId);
+        public RoomHotelViewModel GetRoom(string hotelId, string roomId) {
+            var room = hotels.Find(h => h.Id.Equals(hotelId)).FirstOrDefault().Rooms.Find(r => r.Id == roomId);
+            RoomHotelViewModel roomHotelViewModel = new RoomHotelViewModel { HotelId = hotelId, Room = room };
+            return roomHotelViewModel;
+        }
 
         public List<Room> GetRooms(string hotelId) => hotels.Find(h => h.Id.Equals(hotelId)).FirstOrDefault().Rooms.ToList();
 

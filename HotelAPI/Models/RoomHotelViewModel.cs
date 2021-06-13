@@ -9,8 +9,7 @@ namespace HotelAPI.Models
 {
     public class RoomHotelViewModel
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("HotelId")]
         public string HotelId { get; set; }
         public Room Room { get; set; }
     }

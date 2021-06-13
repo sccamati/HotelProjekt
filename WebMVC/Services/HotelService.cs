@@ -27,7 +27,6 @@ namespace WebMVC.Services
 
         public async Task<bool> CreateHotel(Hotel hotel)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.HotelOperations.CreateHotel();
             var content = new StringContent(JsonSerializer.Serialize(hotel), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync(url, content);
@@ -87,10 +86,10 @@ namespace WebMVC.Services
             });
         }
 
-        public async Task<List<Hotel>> GetOwnerHotels(string ownerId)
+        public async Task<List<Hotel>> GetOwnerHotel(string ownerId)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.GetOwnerHotels(ownerId);
+            var url = UrlsConfig.HotelOperations.GetOwnerHotel(ownerId);
             var response = await _apiClient.GetAsync(url);
 
             response.EnsureSuccessStatusCode();
@@ -103,45 +102,32 @@ namespace WebMVC.Services
         }
 
         //Rooms CRUD        
-        public async Task<Room> CreateRoom(string hotelId, Room room)
+        public async Task<bool> CreateRoom(RoomHotelViewModel roomHotelViewModel)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.CreateRoom(hotelId);
-            var response = await _apiClient.GetAsync(url);
+            var url = UrlsConfig.HotelOperations.CreateRoom();
+            var content = new StringContent(JsonSerializer.Serialize(roomHotelViewModel), System.Text.Encoding.UTF8, "application/json");
+            var response = await _apiClient.PostAsync(url, content);
 
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Room>(hotelResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            return response.StatusCode != HttpStatusCode.BadRequest;
         }
 
-    public async Task<Hotel> DeleteRoom(string hotelId, string number)
-    {
+        public async Task<bool> DeleteRoom(string hotelId, string roomId)
+        {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
-            var url = UrlsConfig.HotelOperations.DeleteRoom(hotelId, number);
-            var response = await _apiClient.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Hotel>(hotelResponse, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var url = UrlsConfig.HotelOperations.DeleteRoom(hotelId, roomId);
+            var response = await _apiClient.DeleteAsync(url);
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
-public async Task<Room> GetRoom(string hotelId, string number)
+        public async Task<RoomHotelViewModel> GetRoom(string hotelId, string roomId)
         {
-            var url = UrlsConfig.HotelOperations.GetRoom(hotelId, number);
+            var url = UrlsConfig.HotelOperations.GetRoom(hotelId, roomId);
             var response = await _apiClient.GetAsync(url);
 
             response.EnsureSuccessStatusCode();
 
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<Room>(hotelResponse, new JsonSerializerOptions
+            var roomResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<RoomHotelViewModel>(roomResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
@@ -162,15 +148,15 @@ public async Task<Room> GetRoom(string hotelId, string number)
         }
 
         public async Task<List<RoomHotelViewModel>> GetFiltredRooms(
-            [FromQuery] string city,
-            [FromQuery] string phrase,
-            [FromQuery] int bedForOne,
-            [FromQuery] int bedForTwo,
-            [FromQuery] int numberOfGuests,
-            [FromQuery] decimal price,
-            [FromQuery] string standard,
-            [FromQuery] string dateStart,
-            [FromQuery] string dateEnd
+            string city,
+            string phrase,
+            int bedForOne,
+            int bedForTwo,
+            int numberOfGuests,
+            decimal price,
+            string standard,
+            string dateStart,
+            string dateEnd
             )
         {
             var url = UrlsConfig.HotelOperations.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);

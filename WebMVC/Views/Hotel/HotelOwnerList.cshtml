@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<WebMVC.Models.Hotel>
 
 @{
-    ViewData["Title"] = "ListHotels";
+    ViewData["Title"] = "HotelOwnerList";
 }
 
-<h1>ListHotels</h1>
-
+<h1>HotelOwnerList</h1>
+@Html.ActionLink("Create New", "CreateHotel")
 @if (@ViewBag.empty == "")
 {
     <table class="table">
@@ -44,12 +44,15 @@
                         @Html.DisplayFor(modelItem => item.Rate)
                     </td>
                     <td>
-                        @Html.ActionLink("Details", "GetHotel", new { id=item.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Edit", "EditHotel", new { id = item.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Details", "GetHotel", new { id = item.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Delete", "DeleteHotel", "Hotel", new { id = item.Id }, new { @class = "btn btn-primary" })
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
 }
 else
 {
