@@ -38,7 +38,7 @@ namespace IdentityAPI.Services
         public ReplaceOneResult Update(User user)
         {
             var u = GetUser(user.Id);
-            if(user.Password == user.Password)
+            if(user.Password != u.Password)
             {
                 using (SHA256 sha256Hash = SHA256.Create())
                 {
