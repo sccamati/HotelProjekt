@@ -15,7 +15,7 @@ namespace WebMVC.Models
         [BsonElement("Email")]
         public string Email { get; set; }
         [BsonElement("Password")]
-        [StringLength(8, ErrorMessage = "Password is too short. Minimum length is 8")]
+        [MinLength(8, ErrorMessage = "Password is too short. Minimum length is 8")]
         public string Password { get; set; }
         [BsonElement("Role")]
         public RoleType Role { get; set; }

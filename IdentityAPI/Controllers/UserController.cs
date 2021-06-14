@@ -24,12 +24,15 @@ namespace IdentityAPI.Controllers
         [HttpPost]
         public ActionResult Create(User user)
         {
-            var u = service.Create(user);
-            if(u.Id == "error")
+            if(service.Create(user))
+            {
+                return Ok(user);
+            }
+            else
             {
                 return BadRequest("There is already account with this email");
             }
-            return Ok(user);
+            
         }
         [Authorize]
         [HttpPut]

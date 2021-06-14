@@ -19,12 +19,12 @@ namespace IdentityAPI.Services
             _users = database.GetCollection<User>("Users");
         }
 
-        public User Create(User user)
+        public bool Create(User user)
         {
-            if(_users.Find(u => u.Email == user.Email).CountDocuments() == 1)
+            string pass = user.Password;
+            if(_users.Find(u => u.Email == user.Email).CountDocuments() == 0 && pass.Length >= 8 && pass.Length <= 30 && pass.Any(char.IsUpper) && pass.Any(char.IsLower) && pass.Any(char.IsSymbol) && pass.Any(char.IsDigit))
             {
-                user.Id = "error";
-                return user;
+                return false;
             }
             using (SHA256 sha256Hash = SHA256.Create())
             {
@@ -32,7 +32,7 @@ namespace IdentityAPI.Services
                 user.Password = hash;
             }
             _users.InsertOne(user);
-            return user;
+            return true;
         }
 
         public ReplaceOneResult Update(User user)

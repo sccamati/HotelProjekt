@@ -11,15 +11,15 @@
 {
 
     <div class="form-inline card-header">
-        @Html.TextBox("city", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "City" })
+        @Html.TextBox("city", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 ", @placeholder = "City" })
         @Html.TextBox("phrase", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Phrase" })
-        @Html.TextBox("bedForOne", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-1 float-left ml-3", @placeholder = "Bed for one", @type = "number", @min = "0",  })
-        @Html.TextBox("bedForTwo", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-1 float-left ml-3", @placeholder = "Bed for two", @type = "number", @min = "0" })
+        @Html.TextBox("bedForOne", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Bed for one", @type = "number", @min = "0",  })
+        @Html.TextBox("bedForTwo", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Bed for two", @type = "number", @min = "0" })
         @Html.TextBox("numberOfGuests", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-1 float-left ml-3", @placeholder = "Guests", @type = "number", @min = "0" })
         @Html.TextBox("price", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Max price", @type = "number", @min = "0" })
     </div>
     <div class="form-inline card-header">
-        @Html.DropDownList("standard", new SelectList(ViewBag.Standard), "Wybierz standard")
+        @Html.DropDownList("standard", new SelectList(ViewBag.Standard), "Wybierz standard", new { @class = "form-control"})
         @Html.TextBox("dateStart", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Data poczatkowa", @type = "date", min = DateTime.Now })
         @Html.TextBox("dateEnd", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Data końcowa", @type = "date", @min = DateTime.Now })
 
