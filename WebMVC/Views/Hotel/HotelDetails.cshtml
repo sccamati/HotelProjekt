@@ -42,6 +42,11 @@
         }
     }
 
+    @if (@HttpContextAccessor.HttpContext.Session.GetString("ID") != null)
+    {
+        @if (@HttpContextAccessor.HttpContext.Session.GetString("ID") == Model.OwnerID)
+            @Html.ActionLink("Add room", "CreateRoom", new { hotelId = Model.Id }, new { @class = "btn btn-primary" })
+    }
     @if (Model.Rooms == null)
     {
         <p>There are no rooms</p>
@@ -52,64 +57,59 @@
 
         @foreach (var item in Model.Rooms)
         {
-<dl class="row">
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(i => item.BedForOne)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(i => item.BedForOne)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(i => item.BedForTwo)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(i => item.BedForTwo)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(i => item.NumberOfGuests)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(i => item.NumberOfGuests)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(i => item.Price)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(i => item.Price)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(i => item.Standard)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(i => item.Standard)
-    </dd>
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(i => item.Description)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(i => item.Description)
-    </dd>
-    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
-    {
-        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner" && Model.OwnerID == @HttpContextAccessor.HttpContext.Session.GetString("ID"))
-        {
-            <dt class="col-sm-2">
-                Delete
-            </dt>
-            <dd class="col-sm-10">
-                @Html.ActionLink("Delete", "DeleteRoom", new { hotelId = Model.Id, roomId = item.Id }, new { @class = "btn btn-primary" })
-            </dd>
-        }
-    }
-</dl>
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(i => item.BedForOne)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(i => item.BedForOne)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(i => item.BedForTwo)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(i => item.BedForTwo)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(i => item.NumberOfGuests)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(i => item.NumberOfGuests)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(i => item.Price)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(i => item.Price)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(i => item.Standard)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(i => item.Standard)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(i => item.Description)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(i => item.Description)
+                </dd>
+                @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
+                {
+                    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner" && Model.OwnerID == @HttpContextAccessor.HttpContext.Session.GetString("ID"))
+                    {
+                        <dt class="col-sm-2">
+                            Delete
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.ActionLink("Delete", "DeleteRoom", new { hotelId = Model.Id, roomId = item.Id }, new { @class = "btn btn-primary" })
+                        </dd>
+                    }
+                }
+            </dl>
         }
     }
 
-    @if (@HttpContextAccessor.HttpContext.Session.GetString("ID") != null)
-    {
-        @if (@HttpContextAccessor.HttpContext.Session.GetString("ID") == Model.OwnerID)
-            @Html.ActionLink("Add room", "CreateRoom", new { hotelId = Model.Id }, new { @class = "btn btn-primary" })
-    }
 </div>
 <div>
     @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
