@@ -47,6 +47,7 @@
                         @Html.ActionLink("Edit", "EditHotel", new { id = item.Id }, new { @class = "btn btn-primary" })
                         @Html.ActionLink("Details", "GetHotel", new { id = item.Id }, new { @class = "btn btn-primary" })
                         @Html.ActionLink("Delete", "DeleteHotel", "Hotel", new { id = item.Id }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Reservations", "GetOwnersReservations", "Reservation", new { id = item.Id }, new { @class = "btn btn-primary" })
                     </td>
                 </tr>
             }

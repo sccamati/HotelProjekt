@@ -131,6 +131,23 @@ namespace WebMVC.Controllers
             return View("ListRes", res);
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<Reservation>>> GetOwnersReservations(string id)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+            var res = await _reservationService.GetOwnersReservations(id);
+            @ViewBag.empty = "";
+            if (res.Count == 0)
+            {
+                @ViewBag.empty = "You don't have any reservations for this hotel";
+            }
+
+            return View("ListRes", res);
+        }
+
         [HttpGet("Reservation/{id:length(24)}")]
         public async Task<ActionResult<List<Reservation>>> GetUsersReservations(string id)
         {

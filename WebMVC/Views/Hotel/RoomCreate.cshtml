@@ -14,27 +14,27 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input asp-for="HotelId" class="form-control" value="@ViewBag.hotelId" type="hidden"/>
             <div class="form-group">
-                <label asp-for="Room.Id" class="control-label"></label>
+                <label asp-for="Room.Id" class="control-label" required></label>
                 <input asp-for="Room.Id" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="Room.BedForOne" class="control-label"></label>
-                <input asp-for="Room.BedForOne" class="form-control" />
+                <input asp-for="Room.BedForOne" class="form-control" required/>
                 <span asp-validation-for="Room.BedForOne" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Room.BedForTwo" class="control-label"></label>
-                <input asp-for="Room.BedForTwo" class="form-control" />
+                <input asp-for="Room.BedForTwo" class="form-control" required/>
                 <span asp-validation-for="Room.BedForTwo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Room.NumberOfGuests" class="control-label"></label>
-                <input asp-for="Room.NumberOfGuests" class="form-control" />
+                <input asp-for="Room.NumberOfGuests" class="form-control" required/>
                 <span asp-validation-for="Room.NumberOfGuests" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Room.Price" class="control-label"></label>
-                <input asp-for="Room.Price" class="form-control" />
+                <input asp-for="Room.Price" class="form-control" required/>
                 <span asp-validation-for="Room.Price" class="text-danger"></span>
             </div>
             <div class="form-group">

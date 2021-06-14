@@ -24,7 +24,7 @@ namespace ReservationAPI.Services
         public List<Reservation> GetReservations() => _reservations.Find(reservations => true).ToList();
         public Reservation GetReservation(string id) => _reservations.Find<Reservation>(reservations => reservations.Id == id).FirstOrDefault();
         public List<Reservation> GetUserReservations(string userId) => _reservations.Find(reservations => reservations.UserId == userId).ToList();
-        public List<Reservation> GetOwnerReservations(string hotelId) => _reservations.Find(reservations => reservations.HotelId == hotelId).ToList();
+        public List<Reservation> GetOwnersReservations(string hotelId) => _reservations.Find(reservations => reservations.HotelId == hotelId).ToList();
 
         public Reservation Create(Reservation reservation)
         {

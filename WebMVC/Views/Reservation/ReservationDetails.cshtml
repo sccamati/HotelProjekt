@@ -1,5 +1,6 @@
 ﻿@model WebMVC.Models.Reservation
-
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "ReservationDetails";
 }
@@ -10,46 +11,52 @@
     <h4>Reservation</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
+
+        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner")
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Id)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Id)
+            </dd>
+            <dt class="col-sm-2">
+                Client
+            </dt>
+
+            <dd class="col-sm-10">
+                @Html.ActionLink("Client Details", "GetUser", "User", new { id = Model.UserId })
+            </dd>
+        }
+
+        <dt class="col-sm-2">
             Hotel
         </dt>
         <dd class="col-sm-10">
             @Html.ActionLink("Hotel Details", "GetHotel", "Hotel", new { id = Model.HotelId })
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Room
         </dt>
         <dd class="col-sm-10">
             @Html.ActionLink("Room Details", "GetRoomDetails", "Hotel", new { hotelId = Model.HotelId, roomId = Model.RoomId })
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserId)
-        </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StartDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.EndDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Price)
         </dd>
     </dl>

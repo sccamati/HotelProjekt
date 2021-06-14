@@ -55,6 +55,21 @@ namespace WebMVC.Services
             });
         }
 
+        public async Task<List<Reservation>> GetOwnersReservations(string id)
+        {
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var userId = id;
+            var url = UrlsConfig.ReservationOperations.GetOwnersRes(userId);
+            var response = await _apiClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var reservationResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<List<Reservation>>(reservationResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        }
+
         public async Task<Reservation> GetReservationAsync(string id)
         {
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));

@@ -15,6 +15,7 @@ namespace WebMVC.Services
         //Task<Reservation> UpdateReservationAsync(string id, Reservation reservation);
         Task<List<Reservation>> GetUsersReservations();
         Task<List<Reservation>> GetUsersReservations(string id);
+        Task<List<Reservation>> GetOwnersReservations(string id);
 
     }
 }
