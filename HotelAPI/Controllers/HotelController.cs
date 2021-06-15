@@ -1,5 +1,6 @@
 ﻿using HotelAPI.Models;
 using HotelAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,13 +21,14 @@ namespace HotelAPI.Controllers
         }
 
         //Hotels CRUD
+        [Authorize]
         [HttpPost]
         public ActionResult<Hotel> CreateHotel(Hotel hotel)
         {
             var h = _service.CreateHotel(hotel);
             return Ok(hotel);
         }
-
+        [Authorize]
         [HttpPut]
         public ActionResult<Hotel> UpdateHotel(Hotel hotel)
         {
@@ -41,7 +43,7 @@ namespace HotelAPI.Controllers
                 return Ok(hotel);
             }
         }
-
+        [Authorize]
         [HttpDelete("{id:length(24)}")]
         public ActionResult<List<Hotel>> DeleteHotel(string id)
         {
@@ -53,6 +55,7 @@ namespace HotelAPI.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpGet("{id:length(24)}")]
         public ActionResult GetHotel(string id)
         {
@@ -70,7 +73,7 @@ namespace HotelAPI.Controllers
         {
             return _service.GetHotels();
         }
-
+        [Authorize]
         [HttpGet("/ownerHotel/{ownerId:length(24)}")]
         public ActionResult<List<Hotel>> GetOwnerHotels(string ownerId)
         {
@@ -78,14 +81,14 @@ namespace HotelAPI.Controllers
         }
 
         //Rooms CRUD        
-
+        [Authorize]
         [HttpPost("room/")]
         public ActionResult<RoomHotelViewModel> CreateRoom(RoomHotelViewModel roomHotelViewModel)
         {
             var r = _service.CreateRoom(roomHotelViewModel);
             return Ok(roomHotelViewModel);
         }
-
+        [Authorize]
         [HttpDelete("room/{hotelId:length(24)}/{roomId}")]
         public ActionResult<Hotel> DeleteRoom(string hotelId, string roomId)
         {
@@ -96,7 +99,6 @@ namespace HotelAPI.Controllers
             }
             return Ok();
         }
-
         [HttpGet("room/{hotelId:length(24)}/{roomId}")]
         public ActionResult GetRoom(string hotelId, string roomId)
         {
@@ -114,7 +116,7 @@ namespace HotelAPI.Controllers
         {
             return _service.GetRooms(hotelId);
         }
-
+        
         [HttpGet("rooms/filtred/")]
         public ActionResult<List<RoomHotelViewModel>> GetFiltredRooms(
             [FromQuery] string city,
