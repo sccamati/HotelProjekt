@@ -11,7 +11,7 @@ namespace ReservationAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ReservationController : Controller
     {
         private readonly ReservationService _service;
@@ -60,6 +60,17 @@ namespace ReservationAPI.Controllers
             return Ok(reservation);
         }
 
+        [HttpGet("RoomsRes/{hotelId:length(24)}/{roomId}")]
+        public ActionResult<Reservation> GetRoomsReservation(string hotelId, string roomId)
+        {
+            var reservation = _service.GetRoomsReservations(hotelId, roomId);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            return Ok(reservation);
+        }
+
         [HttpDelete("{id:length(24)}")]
         public ActionResult Delete(string id)
         {
@@ -89,7 +100,5 @@ namespace ReservationAPI.Controllers
                 return Ok(reservation);
             }
         }
-
-
     }
 }

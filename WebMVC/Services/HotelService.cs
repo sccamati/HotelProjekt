@@ -165,8 +165,9 @@ namespace WebMVC.Services
 
             response.EnsureSuccessStatusCode();
 
-            var hotelResponse = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<RoomHotelViewModel>>(hotelResponse, new JsonSerializerOptions
+            var roomResponse = await response.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<List<RoomHotelViewModel>>(roomResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });

@@ -83,7 +83,14 @@ namespace HotelAPI.Controllers
         public ActionResult<RoomHotelViewModel> CreateRoom(RoomHotelViewModel roomHotelViewModel)
         {
             var r = _service.CreateRoom(roomHotelViewModel);
-            return Ok(roomHotelViewModel);
+            if (r == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(roomHotelViewModel);
+            }
         }
 
         [HttpDelete("room/{hotelId:length(24)}/{roomId}")]

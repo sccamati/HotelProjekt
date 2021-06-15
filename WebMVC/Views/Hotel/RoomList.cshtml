@@ -19,13 +19,14 @@
         @Html.TextBox("price", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Max price", @type = "number", @min = "0" })
     </div>
     <div class="form-inline card-header">
-        @Html.DropDownList("standard", new SelectList(ViewBag.Standard), "Wybierz standard", new { @class = "form-control"})
+        @Html.DropDownList("standard", new SelectList(ViewBag.Standard), "Wybierz standard", new { @class = "form-control" })
         @Html.TextBox("dateStart", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Data poczatkowa", @type = "date", min = DateTime.Now })
         @Html.TextBox("dateEnd", ViewBag.CurrentFilter as string, new { @class = "form-control col-md-2 float-left ml-3", @placeholder = "Data końcowa", @type = "date", @min = DateTime.Now })
-
+        
         <input id="filter" class="btn btn-primary float-left ml-3" type="submit" value="Search" />
     </div>
 }
+<span class="text-danger">@ViewBag.error</span>
 
 <table class="table">
     <thead>

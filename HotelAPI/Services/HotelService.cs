@@ -47,12 +47,19 @@ namespace HotelAPI.Services
 
         public RoomHotelViewModel CreateRoom(RoomHotelViewModel roomHotelViewModel)
         {
-            var itemFilter = Builders<Hotel>.Filter.Eq(h => h.Id, roomHotelViewModel.HotelId);
-            var updateBuilder = Builders<Hotel>.Update.AddToSet(h => h.Rooms, roomHotelViewModel.Room);
+            var r = GetRoom(roomHotelViewModel.HotelId, roomHotelViewModel.Room.Id);
+            if (r.Room == null)
+            {
+                var itemFilter = Builders<Hotel>.Filter.Eq(h => h.Id, roomHotelViewModel.HotelId);
+                var updateBuilder = Builders<Hotel>.Update.AddToSet(h => h.Rooms, roomHotelViewModel.Room);
 
-            hotels.UpdateOneAsync(itemFilter, updateBuilder, new UpdateOptions() { IsUpsert = true }).Wait();
-
-            return roomHotelViewModel;
+                hotels.UpdateOneAsync(itemFilter, updateBuilder, new UpdateOptions() { IsUpsert = true }).Wait();
+                return roomHotelViewModel;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public Hotel DeleteRoom(string hotelId, string roomId)
@@ -115,10 +122,10 @@ namespace HotelAPI.Services
                 roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.BedForTwo == bedForTwo).ToList();
 
             if (price > 0)
-                roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.Price == price).ToList();
+                roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.Price <= price).ToList();
 
-            if (bedForOne > 0)
-                roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.BedForOne == bedForOne).ToList();
+            if (numberOfGuests > 0)
+                roomHotelViewModels = roomHotelViewModels.Where(r => r.Room.NumberOfGuests == numberOfGuests).ToList();
 
             if (!String.IsNullOrEmpty(standard))
             {
