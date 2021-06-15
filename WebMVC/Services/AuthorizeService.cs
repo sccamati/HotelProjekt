@@ -32,8 +32,6 @@ namespace WebMVC.Services
             {
                 u.Token = "";
             }
-
-
             return u;
         }
     }
