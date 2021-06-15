@@ -27,6 +27,20 @@ else
             @Html.DisplayFor(model => model.Email)
         </dd>
     }
+    else if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner" && Model.Id == @HttpContextAccessor.HttpContext.Session.GetString("ID") || @HttpContextAccessor.HttpContext.Session.GetString("Role") == "User")
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+        </dl>
+        <div>
+            @Html.ActionLink("Change Password", "ChangePassword") |
+        </div>
+    }
     else
     {
         <dl class="row">

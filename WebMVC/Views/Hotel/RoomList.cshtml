@@ -41,7 +41,7 @@
                 @Html.DisplayNameFor(model => model.Room.NumberOfGuests)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Room.Price)
+                @Html.ActionLink("Price", "GetFiltredRooms", new { sortOrder = ViewBag.PriceSortParam, currentFilter = ViewBag.CurrentFilter })
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Room.Standard)
@@ -76,7 +76,7 @@
                 </td>
                 <td>
                     @Html.ActionLink("Details", "GetRoom", new { hotelId = item.HotelId, roomId = item.Room.Id, }, new { @class = "btn btn-primary" })
-                    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "User")
+                    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "User" && ViewBag.error == "")
                     {
                         <button class="btn btn-success book-btn" onclick="book('@item.HotelId', '@item.Room.Id')">Book</button>
                     }
@@ -112,10 +112,12 @@
         }
     });
 
-        $(document).ready(function () {
-            if ($('#dateStart').val() == "" && $('#dateEnd').val() == "") {
+
+
+    $(document).ready(function () {
+        if ($('#dateStart').val() == "" || $('#dateEnd').val() == "" ) {
                 $(".book-btn").hide();
             }
-        
+
     });
 </script>

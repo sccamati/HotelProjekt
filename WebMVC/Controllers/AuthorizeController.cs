@@ -38,6 +38,7 @@ namespace WebMVC.Controllers
             _accessor.HttpContext.Session.SetString("JWToken", u.Token);
             _accessor.HttpContext.Session.SetString("ID", u.Id);
             _accessor.HttpContext.Session.SetString("Role", u.Role);
+            _accessor.HttpContext.Session.SetString("Email", u.Email);
             return RedirectToAction("Index", "Home");
         }
 

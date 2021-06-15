@@ -305,7 +305,7 @@ namespace WebMVC.Controllers
                     if(newRoomsRes.Count == 0)
                     {
                         ViewBag.error = "Brak pokoi w wybranym terminie!";
-                        return View("RoomList", roomsRes);
+                        return View("RoomList", newRoomsRes);
                     }
                     else
                     {

@@ -81,6 +81,25 @@ namespace WebMVC.Controllers
 
             return View("UserDetails", res);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<User>> GetUserDetails()
+        {
+
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+
+            var res = await _userService.GetUserAsync(_accessor.HttpContext.Session.GetString("ID"));
+
+            if (res == null)
+            {
+                return BadRequest($"No user found for id {_accessor.HttpContext.Session.GetString("ID")}");
+            }
+
+            return View("UserDetails", res);
+        }
         [HttpGet]
         public async Task<ActionResult<List<User>>> GetUsers(string email)
         {
@@ -135,6 +154,44 @@ namespace WebMVC.Controllers
                 return BadRequest($"Error wbile editing");
             }
             return RedirectToAction("GetUsers");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ChangePassword()
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+            if (string.IsNullOrEmpty(_accessor.HttpContext.Session.GetString("ID")))
+            {
+                return BadRequest("Need valid user id");
+            }
+
+            var res = await _userService.GetUserAsync(_accessor.HttpContext.Session.GetString("ID"));
+
+            if (res == null)
+            {
+                return BadRequest($"No user found for id {_accessor.HttpContext.Session.GetString("ID")}");
+            }
+            return View("NewPassword", res);
+        }
+        // POST: ReservationController/Create
+
+        [HttpPost]
+        public async Task<ActionResult> ChangePassword(User user)
+        {
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+
+            var res = await _userService.UpdateUserAsync(user);
+            if (res == null)
+            {
+                return BadRequest($"Error wbile editing");
+            }
+            return RedirectToAction("GetUserDetails");
         }
 
         [HttpGet]

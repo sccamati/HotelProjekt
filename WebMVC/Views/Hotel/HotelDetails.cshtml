@@ -9,18 +9,7 @@
     <h1>Hotel</h1>
     <hr />
     <dl class="row">
-        @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
-        {
-            @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner" && Model.OwnerID == @HttpContextAccessor.HttpContext.Session.GetString("ID"))
-            {
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Id)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Id)
-                </dd>
-            }
-        }
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
@@ -70,6 +59,18 @@
         @foreach (var item in Model.Rooms)
         {
             <dl class="row">
+                @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") != null)
+                {
+                    @if (@HttpContextAccessor.HttpContext.Session.GetString("Role") == "Owner" && Model.OwnerID == @HttpContextAccessor.HttpContext.Session.GetString("ID"))
+                    {
+                        <dt class="col-sm-2">
+                            @Html.DisplayNameFor(i => item.Id)
+                        </dt>
+                        <dd class="col-sm-10">
+                            @Html.DisplayFor(i => item.Id)
+                        </dd>
+                    }
+                }
                 <dt class="col-sm-2">
                     @Html.DisplayNameFor(i => item.BedForOne)
                 </dt>
