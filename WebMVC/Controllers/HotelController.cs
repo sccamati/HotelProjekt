@@ -211,6 +211,7 @@ namespace WebMVC.Controllers
 
         public async Task<ActionResult<List<RoomHotelViewModel>>> GetFiltredRooms(
             string city,
+            string sortOrder,
             string phrase,
             int bedForOne,
             int bedForTwo,
@@ -224,10 +225,21 @@ namespace WebMVC.Controllers
             sTANDARDs.Add(STANDARD.Standard);
             sTANDARDs.Add(STANDARD.Exclusive);
             ViewBag.Standard = sTANDARDs;
-            var roomsRes = await _hotelService.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);
-
+            List<RoomHotelViewModel> roomsRes = await _hotelService.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.PriceSortParam = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.empty = "";
             ViewBag.error = "";
+
+            if(sortOrder == "Price")
+            {
+                roomsRes = (List<RoomHotelViewModel>)roomsRes.OrderBy(r => r.Room.Price).ToList();
+            }
+            else
+            {
+                roomsRes = (List<RoomHotelViewModel>)roomsRes.OrderByDescending(r => r.Room.Price).ToList();
+            }
+            
 
             if (roomsRes == null)
             {
