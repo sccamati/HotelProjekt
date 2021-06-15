@@ -16,6 +16,6 @@ namespace WebMVC.Services
         Task<List<Reservation>> GetUsersReservations();
         Task<List<Reservation>> GetUsersReservations(string id);
         Task<List<Reservation>> GetOwnersReservations(string id);
-
+        Task<List<Reservation>> GetRoomsReservations(string hotelId, string roomId);
     }
 }

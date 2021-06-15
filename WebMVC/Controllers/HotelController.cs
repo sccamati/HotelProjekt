@@ -19,10 +19,12 @@ namespace WebMVC.Controllers
 
         private readonly IHttpContextAccessor _accessor;
         private readonly IHotelService _hotelService;
+        private readonly IReservationService _reservationService;
 
-        public HotelController(IHotelService hotelService, IHttpContextAccessor accessor)
+        public HotelController(IHotelService hotelService, IReservationService reservationService, IHttpContextAccessor accessor)
         {
             _hotelService = hotelService;
+            _reservationService = reservationService;
             _accessor = accessor;
         }
 
@@ -170,9 +172,19 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
-            await _hotelService.CreateRoom(roomHotelViewModel);
+            var res = await _hotelService.CreateRoom(roomHotelViewModel);
 
-            return RedirectToAction("GetHotel", "Hotel", new { id = roomHotelViewModel.HotelId });
+            ViewBag.error = "";
+
+            if (!res)
+            {
+                ViewBag.error = "There exists the room with this id";
+                return View("RoomCreate", roomHotelViewModel);
+            }
+            else
+            {
+                return RedirectToAction("GetHotel", "Hotel", new { id = roomHotelViewModel.HotelId });
+            }
         }
 
         public async Task<ActionResult> DeleteRoom(string hotelId, string roomId)
@@ -212,14 +224,95 @@ namespace WebMVC.Controllers
             sTANDARDs.Add(STANDARD.Standard);
             sTANDARDs.Add(STANDARD.Exclusive);
             ViewBag.Standard = sTANDARDs;
-            var res = await _hotelService.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);
+            var roomsRes = await _hotelService.GetFiltredRooms(city, phrase, bedForOne, bedForTwo, numberOfGuests, price, standard, dateStart, dateEnd);
+
             ViewBag.empty = "";
-            if (res == null)
+            ViewBag.error = "";
+
+            if (roomsRes == null)
             {
-                ViewBag.empty = "empty";
+                ViewBag.empty = "No rooms available";
+                return View("RoomList", roomsRes);
             }
 
-            return View("RoomList", res);
+            if (dateStart == null && dateEnd == null)
+            {
+                return View("RoomList", roomsRes);
+            }
+            else if (dateStart == null && dateEnd != null)
+            {
+                ViewBag.error = "Podaj datę rozpoczęcia, aby móc zarezerwować!";
+                return View("RoomList", roomsRes);
+            }
+            else if (dateStart != null && dateEnd == null)
+            {
+                ViewBag.error = "Podaj datę zakończenia, aby móc zarezerwować!";
+                return View("RoomList", roomsRes);
+            }
+            else
+            {
+                DateTime newDateStart = DateTime.ParseExact(dateStart, "yyyy-MM-dd", null);
+                DateTime newDateEnd = DateTime.ParseExact(dateEnd, "yyyy-MM-dd", null);
+
+                if (newDateEnd < newDateStart)
+                {
+                    ViewBag.error = "Data zakończenia nie może być wcześniejsza niż data rozpoczęcia!";
+                    return View("RoomList", roomsRes);
+                }
+                else if (newDateStart < DateTime.Now)
+                {
+                    ViewBag.error = "Nie można rezerwować wstecz!";
+                    return View("RoomList", roomsRes);
+                }
+                else
+                {
+                    bool roomOk;
+                    var newRoomsRes = new List<RoomHotelViewModel>();
+                    foreach (var room in roomsRes)
+                    {
+                        roomOk = true;
+                        var reservationsRes = await _reservationService.GetRoomsReservations(room.HotelId, room.Room.Id);
+
+                        foreach (var reservation in reservationsRes)
+                        {
+                            if (newDateEnd < reservation.StartDate 
+                                && newDateEnd < reservation.EndDate 
+                                && newDateStart < reservation.StartDate 
+                                && newDateStart < reservation.EndDate)
+                            {
+                                roomOk = true;
+                            }
+                            else if (newDateEnd > reservation.StartDate
+                                && newDateEnd > reservation.EndDate
+                                && newDateStart > reservation.StartDate
+                                && newDateStart > reservation.EndDate)
+                            {
+                                roomOk = true;
+                            }
+                            else
+                            {
+                                roomOk = false;
+                                break;
+                            }
+                        }
+
+                        if (roomOk)
+                        {
+                            newRoomsRes.Add(room);
+                        }
+                    }
+
+                    if(newRoomsRes.Count == 0)
+                    {
+                        ViewBag.error = "Brak pokoi w wybranym terminie!";
+                        return View("RoomList", roomsRes);
+                    }
+                    else
+                    {
+                        return View("RoomList", newRoomsRes);
+                    }
+                }
+            }
         }
 
         [HttpGet]
