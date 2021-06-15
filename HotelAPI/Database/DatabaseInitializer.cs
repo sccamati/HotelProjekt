@@ -15,6 +15,7 @@ namespace IdentityAPI.Database
                 {
                     new Hotel()
                     {
+                        Id = "123456789012345678901234",
                         Address = "Warszawska 4",
                         City = "Sieldce",
                         Name = "Mily hotel",
@@ -23,6 +24,7 @@ namespace IdentityAPI.Database
                         {
                             new Room
                             {
+                                Id = "1",
                                 BedForOne = 1,
                                 BedForTwo = 2,
                                 Description = "Elegancki pokoj",
@@ -32,6 +34,7 @@ namespace IdentityAPI.Database
                             },
                             new Room
                             {
+                                Id = "2",
                                 BedForOne = 2,
                                 BedForTwo = 2,
                                 Description = "Zwykly pokoj",
@@ -43,6 +46,7 @@ namespace IdentityAPI.Database
                     },
                     new Hotel()
                     {
+                        Id = "123456789012345678901236",
                         Address = "Warszawska 4",
                         City = "Warszawa",
                         Name = "Bardzo fajny hotel",
@@ -51,6 +55,7 @@ namespace IdentityAPI.Database
                         {
                             new Room
                             {
+                                Id = "1",
                                 BedForOne = 1,
                                 BedForTwo = 2,
                                 Description = "Elegancki pokoj",
@@ -59,7 +64,8 @@ namespace IdentityAPI.Database
                                 Standard = STANDARD.Exclusive
                             },
                             new Room
-                            {
+                            { 
+                                Id = "2",
                                 BedForOne = 2,
                                 BedForTwo = 2,
                                 Description = "Zwykly pokoj",
