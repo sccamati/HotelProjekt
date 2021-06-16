@@ -55,7 +55,6 @@ namespace HotelAPI.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpGet("{id:length(24)}")]
         public ActionResult GetHotel(string id)
         {
