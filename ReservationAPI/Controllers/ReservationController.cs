@@ -11,7 +11,7 @@ namespace ReservationAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   
     public class ReservationController : Controller
     {
         private readonly ReservationService _service;
@@ -20,13 +20,13 @@ namespace ReservationAPI.Controllers
         {
             _service = service;
         }
-
+        [Authorize]
         [HttpGet]
         public ActionResult<List<Reservation>> Get()
         {
             return _service.GetReservations();
         }
-
+        [Authorize]
         [HttpGet("{id:length(24)}")]
         public ActionResult<Reservation> Get(string id)
         {
@@ -37,7 +37,7 @@ namespace ReservationAPI.Controllers
             }
             return Ok(reservation);
         }
-
+        [Authorize]
         [HttpGet("UsersRes/{id:length(24)}")]
         public ActionResult<Reservation> GetUsersReservation(string id)
         {
@@ -48,7 +48,7 @@ namespace ReservationAPI.Controllers
             }
             return Ok(reservation);
         }
-
+        [Authorize]
         [HttpGet("OwnersRes/{id:length(24)}")]
         public ActionResult<Reservation> GetOwnersReservation(string id)
         {
@@ -70,7 +70,7 @@ namespace ReservationAPI.Controllers
             }
             return Ok(reservation);
         }
-
+        [Authorize]
         [HttpDelete("{id:length(24)}")]
         public ActionResult Delete(string id)
         {
@@ -80,14 +80,14 @@ namespace ReservationAPI.Controllers
             }
             return Ok();
         }
-
+        [Authorize]
         [HttpPost]
         public ActionResult Create(Reservation reservation)
         {
             _service.Create(reservation);
             return Ok(reservation);
         }
-
+        [Authorize]
         [HttpPut]
         public ActionResult Put(string id, Reservation reservation)
         {

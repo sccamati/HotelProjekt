@@ -17,7 +17,7 @@ namespace IdentityAPI.Database
                     {
                         Id = "123456789012345678901234",
                         Address = "Warszawska 4",
-                        City = "Sieldce",
+                        City = "Siedlce",
                         Name = "Mily hotel",
                         OwnerID = "123456789123456789123456",
                         Rooms = new List<Room>
