@@ -59,7 +59,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Authorize" asp-action="LogOut">LogOut</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="GetUserDetails"> Witaj @HttpContextAccessor.HttpContext.Session.GetString("Email")</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="GetUserDetails"> Welcome @HttpContextAccessor.HttpContext.Session.GetString("Email")</a>
                             </li>
                         }
                         else
