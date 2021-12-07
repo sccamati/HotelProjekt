@@ -54,7 +54,7 @@ namespace IdentityAPI.Services
                     new Claim(ClaimTypes.Role, user.Role.ToString()),
                 }),
                 
-                Expires = DateTime.Now.AddSeconds(5),
+                Expires = DateTime.Now.AddSeconds(20),
 
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),
@@ -87,8 +87,15 @@ namespace IdentityAPI.Services
             user.RefreshToken = tokenHandler.WriteToken(refreshToken);
 
             _users.ReplaceOne(u => u.Id == user.Id, user);
-
-            return new LoggedUser() { Token = tokenHandler.WriteToken(token), RefreshToken = tokenHandler.WriteToken(refreshToken), Id = user.Id, Email = user.Email, Role = user.Role.ToString()};
+            var tokenExpire = tokenDescriptor.Expires;
+            return new LoggedUser()
+            {
+                Token = tokenHandler.WriteToken(token),
+                RefreshToken = tokenHandler.WriteToken(refreshToken),
+                Id = user.Id, Email = user.Email,
+                Role = user.Role.ToString(),
+                ExpiresTime = tokenDescriptor.Expires
+            };
         }
 
         public LoggedUser RefreshToken(string token)
@@ -136,7 +143,7 @@ namespace IdentityAPI.Services
                     new Claim(ClaimTypes.Role, user.Role.ToString()),
                 }),
 
-                Expires = DateTime.Now.AddSeconds(30),
+                Expires = DateTime.Now.AddSeconds(50),
 
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),
@@ -168,7 +175,15 @@ namespace IdentityAPI.Services
             user.RefreshToken = tokenHandler.WriteToken(newRefreshToken);
             _users.ReplaceOne(u => u.Id == user.Id, user);
 
-            return new LoggedUser() { Token = tokenHandler.WriteToken(newToken), RefreshToken = tokenHandler.WriteToken(newRefreshToken), Id = user.Id, Email = user.Email, Role = user.Role.ToString()};
+            return new LoggedUser()
+            {
+                Token = tokenHandler.WriteToken(newToken),
+                RefreshToken = tokenHandler.WriteToken(newRefreshToken),
+                Id = user.Id,
+                Email = user.Email,
+                Role = user.Role.ToString(),
+                ExpiresTime = tokenDescriptor.Expires
+            };
         }
     }
 }

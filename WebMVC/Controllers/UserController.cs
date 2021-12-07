@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,22 +20,34 @@ namespace WebMVC.Controllers
 
         private readonly IUserService _userService;
         private readonly IHttpContextAccessor _accessor;
+        private readonly IServiceProvider _serviceProvider;
 
-        public UserController(IUserService userService, IHttpContextAccessor accessor)
+        public UserController(IUserService userService, IHttpContextAccessor accessor, IServiceProvider serviceProvider)
         {
             _userService = userService;
             _accessor = accessor;
+            _serviceProvider = serviceProvider;
         }
 
         // POST: ReservationController/Create
         [HttpPost]
-        public ActionResult Create(User user)
+        public async Task<ActionResult> Create(User user)
         {
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
-            _userService.CreateUserAsync(user);
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
+            await _userService.CreateUserAsync(user);
             return Ok();
         }
 
@@ -46,6 +59,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Need valid user id");
@@ -67,6 +90,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Need valid user id");
@@ -91,6 +124,15 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
 
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var res = await _userService.GetUserAsync(_accessor.HttpContext.Session.GetString("ID"));
 
             if (res == null)
@@ -106,6 +148,15 @@ namespace WebMVC.Controllers
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
+            }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
             }
 
             var res = await _userService.GetUsersAsync(email);
@@ -125,6 +176,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Need valid user id");
@@ -148,6 +209,15 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
 
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var res = await _userService.UpdateUserAsync(user);
             if (res == null)
             {
@@ -163,6 +233,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             if (string.IsNullOrEmpty(_accessor.HttpContext.Session.GetString("ID")))
             {
                 return BadRequest("Need valid user id");
@@ -185,6 +265,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
 
             var res = await _userService.UpdateUserAsync(user);
             if (res == null)
@@ -243,6 +333,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Need valid user id");

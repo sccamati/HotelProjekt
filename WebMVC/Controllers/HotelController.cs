@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,14 @@ namespace WebMVC.Controllers
         private readonly IHttpContextAccessor _accessor;
         private readonly IHotelService _hotelService;
         private readonly IReservationService _reservationService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public HotelController(IHotelService hotelService, IReservationService reservationService, IHttpContextAccessor accessor)
+        public HotelController(IHotelService hotelService, IReservationService reservationService, IHttpContextAccessor accessor, IServiceProvider serviceProvider)
         {
             _hotelService = hotelService;
             _reservationService = reservationService;
             _accessor = accessor;
+            _serviceProvider = serviceProvider;
         }
 
         [HttpGet]
@@ -43,6 +46,15 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
 
+            if(DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             hotel.OwnerID = _accessor.HttpContext.Session.GetString("ID");
 
             await _hotelService.CreateHotel(hotel);
@@ -53,6 +65,21 @@ namespace WebMVC.Controllers
         [HttpPut]
         public async Task<ActionResult<Hotel>> UpdateHotel(Hotel hotel)
         {
+
+            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            {
+                return RedirectToAction("Index", "Authorize");
+            }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var hotels = await _hotelService.UpdateHotel(hotel);
             ViewBag.empty = "";
             if (hotels == null)
@@ -70,6 +97,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Need valid user id");
@@ -92,6 +129,15 @@ namespace WebMVC.Controllers
                 return RedirectToAction("Index", "Authorize");
             }
 
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var res = await _hotelService.UpdateHotel(hotel);
             if (res == null)
             {
@@ -107,6 +153,15 @@ namespace WebMVC.Controllers
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
+            }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
             }
 
             var res = await _hotelService.DeleteHotel(id);
@@ -146,6 +201,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var hotels = await _hotelService.GetOwnerHotel(ownerId);
             ViewBag.empty = "";
             if (hotels == null)
@@ -173,6 +238,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var res = await _hotelService.CreateRoom(roomHotelViewModel);
 
             ViewBag.error = "";
@@ -193,6 +268,15 @@ namespace WebMVC.Controllers
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
+            }
+
+                        if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
             }
 
             var res = await _hotelService.DeleteRoom(hotelId, roomId);

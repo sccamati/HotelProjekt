@@ -44,6 +44,8 @@ namespace WebMVC.Controllers
             _accessor.HttpContext.Session.SetString("ID", u.Id);
             _accessor.HttpContext.Session.SetString("Role", u.Role);
             _accessor.HttpContext.Session.SetString("Email", u.Email);
+            _accessor.HttpContext.Session.SetString("ExpiresTime", u.ExpiresTime.ToString());
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -54,7 +56,10 @@ namespace WebMVC.Controllers
             _accessor.HttpContext.Session.Remove("ID");
             _accessor.HttpContext.Session.Remove("Role");
             _accessor.HttpContext.Session.Remove("Email");
+            _accessor.HttpContext.Session.Remove("ExpiresTime");
+
             RefreshTokenStorage.RefreshToken = "";
+
             return RedirectToAction("Index", "Home");
         }
     }

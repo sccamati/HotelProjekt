@@ -27,12 +27,13 @@ namespace WebMVC.Services
             var url = UrlsConfig.AuthorizeOperations.LogIn();
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync(url, content);
-            var reservationResponse = await response.Content.ReadAsStringAsync();
-            var u = JsonSerializer.Deserialize<LoggedUser>(reservationResponse, new JsonSerializerOptions
+            var authResponse = await response.Content.ReadAsStringAsync();
+            var u = JsonSerializer.Deserialize<LoggedUser>(authResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
 
+            
             RefreshTokenStorage.RefreshToken = u.RefreshToken;
 
             if (response.StatusCode == HttpStatusCode.BadRequest)
@@ -48,8 +49,8 @@ namespace WebMVC.Services
             var token = RefreshTokenStorage.RefreshToken;
             var url = UrlsConfig.AuthorizeOperations.RefreshToken(token);
             var response = await _apiClient.GetAsync(url);
-            var reservationResponse = await response.Content.ReadAsStringAsync();
-            var u = JsonSerializer.Deserialize<LoggedUser>(reservationResponse, new JsonSerializerOptions
+            var authResponse = await response.Content.ReadAsStringAsync();
+            var u = JsonSerializer.Deserialize<LoggedUser>(authResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });

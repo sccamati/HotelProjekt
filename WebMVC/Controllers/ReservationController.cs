@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +20,14 @@ namespace WebMVC.Controllers
         private readonly IReservationService _reservationService;
         private readonly IHotelService _hotelService;
         private readonly IHttpContextAccessor _accessor;
-        public ReservationController(IReservationService reservationService, IHotelService hotelService, IHttpContextAccessor accessor)
+        private readonly IServiceProvider _serviceProvider;
+
+        public ReservationController(IReservationService reservationService, IHotelService hotelService, IHttpContextAccessor accessor, IServiceProvider serviceProvider)
         {
             _reservationService = reservationService;
             _hotelService = hotelService;
             _accessor = accessor;
+            _serviceProvider = serviceProvider;
         }
 
         // POST: ReservationController/Create
@@ -33,6 +37,15 @@ namespace WebMVC.Controllers
             if (_accessor.HttpContext.Session.GetString("JWToken") == null)
             {
                 return RedirectToAction("Index", "Authorize");
+            }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
             }
 
             RoomHotelViewModel room = await _hotelService.GetRoom(hotelId, roomId);
@@ -59,6 +72,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             ViewBag.error = "";
             if (string.IsNullOrEmpty(id))
             {
@@ -82,6 +105,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest("Need valid reservation id");
@@ -104,6 +137,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var res = await _reservationService.GetAllReservationsAsync();
             ViewBag.empty = "";
             if (res == null)
@@ -121,6 +164,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var res = await _reservationService.GetUsersReservations();
             @ViewBag.empty = "";
             if (res.Count == 0)
@@ -138,6 +191,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var res = await _reservationService.GetOwnersReservations(id);
             @ViewBag.empty = "";
             if (res.Count == 0)
@@ -155,6 +218,16 @@ namespace WebMVC.Controllers
             {
                 return RedirectToAction("Index", "Authorize");
             }
+
+            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    await authorizeService.RefreshToken();
+                }
+            }
+
             var res = await _reservationService.GetUsersReservations(id);
             @ViewBag.empty = "";
             if (res.Count == 0)

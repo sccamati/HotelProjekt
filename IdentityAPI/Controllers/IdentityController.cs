@@ -31,7 +31,6 @@ namespace IdentityAPI.Controllers
             return Ok(user);
         }
 
-        [Authorize]
         [HttpGet("{token}")]
         public ActionResult RefreshToken(string token)
         {
