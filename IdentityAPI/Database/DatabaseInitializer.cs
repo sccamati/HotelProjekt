@@ -20,21 +20,24 @@ namespace IdentityAPI.Database
                         Id = "123456789123456789123452",
                         Email = "admin@wp.pl",
                         Password = "Password1.",
-                        Role = Role.Admin
+                        Role = Role.Admin,
+                        RefreshToken = ""
                     },
                     new User()
                     {
                         Id = "123456789123456789123451",
                         Email = "user@wp.pl",
                         Password = "Password1.",
-                        Role = Role.User
+                        Role = Role.User,
+                        RefreshToken = ""
                     },
                     new User()
                     {
                         Id = "123456789123456789123456",
                         Email = "owner@wp.pl",
                         Password = "Password1.",
-                        Role = Role.Owner
+                        Role = Role.Owner,
+                        RefreshToken = ""
                     },
                 };
 

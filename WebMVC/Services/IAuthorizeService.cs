@@ -9,5 +9,6 @@ namespace WebMVC.Services
     public interface IAuthorizeService
     {
         Task<LoggedUser> LogInAsync(LoginUser loginUser);
+        Task<bool> RefreshToken();
     }
 }

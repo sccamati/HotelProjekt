@@ -1,17 +1,18 @@
-using ReservationAPI.Database;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using ReservationAPI.Models;
+using ReservationAPI.Database;
 using ReservationAPI.Services;
 using Steeltoe.Discovery.Client;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ReservationAPI
 {
@@ -43,8 +44,21 @@ namespace ReservationAPI
                {
                    ValidateIssuerSigningKey = true,
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("SecretKey").Value)),
+                   ValidateLifetime = true,
                    ValidateIssuer = false,
-                   ValidateAudience = false
+                   ValidateAudience = false,
+                   ClockSkew = TimeSpan.Zero
+               };
+               x.Events = new JwtBearerEvents
+               {
+                   OnAuthenticationFailed = context =>
+                   {
+                       if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                       {
+                           context.Response.Headers.Add("Token-Expired", "true");
+                       }
+                       return Task.CompletedTask;
+                   }
                };
            });
             services.AddSingleton<IDatabaseSettings>(db => db.GetRequiredService<IOptions<DatabaseSettings>>().Value);

@@ -40,10 +40,12 @@ namespace WebMVC
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
+
             services.AddSingleton<IReservationService, ReservationService>();
+            services.AddScoped<IAuthorizeService, AuthorizeService>();
             services.AddSingleton<IHotelService, HotelService>();
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IAuthorizeService, AuthorizeService>();
+           
             services.AddHttpClient();
             services.AddMvc().AddRazorRuntimeCompilation();
         }

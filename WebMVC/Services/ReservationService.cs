@@ -9,6 +9,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.Net;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WebMVC.Services
 {
@@ -16,10 +17,12 @@ namespace WebMVC.Services
     {
         private readonly HttpClient _apiClient;
         private readonly IHttpContextAccessor _accessor;
-        public ReservationService(HttpClient httpClient, IHttpContextAccessor accessor)
+        private readonly IServiceProvider _serviceProvider;
+        public ReservationService(HttpClient httpClient, IHttpContextAccessor accessor, IServiceProvider serviceProvider)
         {
             _apiClient = httpClient;
             _accessor = accessor;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<bool> CreateReservationAsync(Reservation reservation)
@@ -28,6 +31,18 @@ namespace WebMVC.Services
             var url = UrlsConfig.ReservationOperations.Create();
             var content = new StringContent(JsonSerializer.Serialize(reservation), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync(url, content);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.PostAsync(url, content);
+                    }
+                }
+            }
 
             return response.StatusCode != HttpStatusCode.BadRequest;
         }
@@ -38,6 +53,18 @@ namespace WebMVC.Services
             var url = UrlsConfig.ReservationOperations.Delete(id);
             var response = await _apiClient.DeleteAsync(url);
 
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.DeleteAsync(url);
+                    }
+                }
+            }
+
             return response.StatusCode != HttpStatusCode.BadRequest;
         }
 
@@ -46,6 +73,20 @@ namespace WebMVC.Services
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.Get();
             var response = await _apiClient.GetAsync(url);
+
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.GetAsync(url);
+                    }
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();
@@ -61,6 +102,19 @@ namespace WebMVC.Services
             var userId = id;
             var url = UrlsConfig.ReservationOperations.GetOwnersRes(userId);
             var response = await _apiClient.GetAsync(url);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.GetAsync(url);
+                    }
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();
@@ -75,6 +129,19 @@ namespace WebMVC.Services
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.GetById(id);
             var response = await _apiClient.GetAsync(url);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.GetAsync(url);
+                    }
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();
@@ -90,6 +157,19 @@ namespace WebMVC.Services
             var userId = _accessor.HttpContext.Session.GetString("ID");
             var url = UrlsConfig.ReservationOperations.GetUsersRes(userId);
             var response = await _apiClient.GetAsync(url);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.GetAsync(url);
+                    }
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();
@@ -105,6 +185,19 @@ namespace WebMVC.Services
             var userId = id;
             var url = UrlsConfig.ReservationOperations.GetUsersRes(userId);
             var response = await _apiClient.GetAsync(url);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.GetAsync(url);
+                    }
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();
@@ -119,6 +212,19 @@ namespace WebMVC.Services
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.ReservationOperations.GetRoomsRes(hotelId, roomId);
             var response = await _apiClient.GetAsync(url);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.GetAsync(url);
+                    }
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();

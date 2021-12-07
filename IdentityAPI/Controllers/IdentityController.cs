@@ -1,5 +1,6 @@
 ﻿using IdentityAPI.Models;
 using IdentityAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,18 @@ namespace IdentityAPI.Controllers
         public ActionResult Login(LoginUser loginUser)
         {
             var user = _identityService.Authenticate(loginUser);
+
+            if (user == null)
+                return Unauthorized();
+
+            return Ok(user);
+        }
+
+        [Authorize]
+        [HttpGet("{token}")]
+        public ActionResult RefreshToken(string token)
+        {
+            var user = _identityService.RefreshToken(token);
 
             if (user == null)
                 return Unauthorized();

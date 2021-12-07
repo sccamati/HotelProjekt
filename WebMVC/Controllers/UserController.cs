@@ -55,7 +55,7 @@ namespace WebMVC.Controllers
 
             if (!res)
             {
-                return RedirectToAction("GetUsers");
+                return RedirectToAction("Index", "Authorize");
             }
             return RedirectToAction("GetUsers");
         }
@@ -76,7 +76,7 @@ namespace WebMVC.Controllers
 
             if (res == null)
             {
-                return BadRequest($"No user found for id {id}");
+                return RedirectToAction("Index", "Authorize");
             }
 
             return View("UserDetails", res);
@@ -95,7 +95,7 @@ namespace WebMVC.Controllers
 
             if (res == null)
             {
-                return BadRequest($"No user found for id {_accessor.HttpContext.Session.GetString("ID")}");
+                return RedirectToAction("Index", "Authorize");
             }
 
             return View("UserDetails", res);
@@ -112,7 +112,7 @@ namespace WebMVC.Controllers
 
             if (res == null)
             {
-                return BadRequest($"0 reservations");
+                return RedirectToAction("Index", "Authorize");
             }
 
             return View("UserList", res);
@@ -134,7 +134,7 @@ namespace WebMVC.Controllers
 
             if (res == null)
             {
-                return BadRequest($"No user found for id {id}");
+                return RedirectToAction("Index", "Authorize");
             }
             return View("EditUser", res);
         }
@@ -151,7 +151,7 @@ namespace WebMVC.Controllers
             var res = await _userService.UpdateUserAsync(user);
             if (res == null)
             {
-                return BadRequest($"Error wbile editing");
+                return RedirectToAction("Index", "Authorize");
             }
             return RedirectToAction("GetUsers");
         }
@@ -172,7 +172,7 @@ namespace WebMVC.Controllers
 
             if (res == null)
             {
-                return BadRequest($"No user found for id {_accessor.HttpContext.Session.GetString("ID")}");
+                return RedirectToAction("Index", "Authorize");
             }
             return View("NewPassword", res);
         }
@@ -189,7 +189,7 @@ namespace WebMVC.Controllers
             var res = await _userService.UpdateUserAsync(user);
             if (res == null)
             {
-                return BadRequest($"Error wbile editing");
+                return RedirectToAction("Index", "Authorize");
             }
             return RedirectToAction("GetUserDetails");
         }
@@ -252,7 +252,7 @@ namespace WebMVC.Controllers
 
             if (res == null)
             {
-                return BadRequest($"No user found for id {id}");
+                return RedirectToAction("Index", "Authorize");
             }
             return View("UserDetails", res);
         }

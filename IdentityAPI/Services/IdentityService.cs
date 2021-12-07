@@ -51,10 +51,29 @@ namespace IdentityAPI.Services
                 {
                     new Claim("id", user.Id),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                }),
+                
+                Expires = DateTime.Now.AddSeconds(5),
+
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(tokenKey),
+                    SecurityAlgorithms.HmacSha256Signature
+                )
+            };
+
+
+            var refreshTokenKey = Encoding.ASCII.GetBytes(_key);
+            var refreshTokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("id", user.Id),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
                 }),
 
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.Now.AddMinutes(10),
 
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),
@@ -63,8 +82,93 @@ namespace IdentityAPI.Services
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            var refreshToken = tokenHandler.CreateToken(refreshTokenDescriptor);
 
-            return new LoggedUser() { Token = tokenHandler.WriteToken(token), Id = user.Id, Email = user.Email, Role = user.Role.ToString() };
+            user.RefreshToken = tokenHandler.WriteToken(refreshToken);
+
+            _users.ReplaceOne(u => u.Id == user.Id, user);
+
+            return new LoggedUser() { Token = tokenHandler.WriteToken(token), RefreshToken = tokenHandler.WriteToken(refreshToken), Id = user.Id, Email = user.Email, Role = user.Role.ToString()};
+        }
+
+        public LoggedUser RefreshToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_key)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            throw new SecurityTokenException("Invalid token");
+
+            
+
+            var Id = tokenHandler.ReadJwtToken(token).Claims.First().Value;
+            var user = _users.Find(u => u.Id == Id.ToString()).FirstOrDefault();
+
+            if(token != user.RefreshToken)
+            {
+                return null;
+            }
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var tokenKey = Encoding.ASCII.GetBytes(_key);
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("id", user.Id),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                }),
+
+                Expires = DateTime.Now.AddSeconds(30),
+
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(tokenKey),
+                    SecurityAlgorithms.HmacSha256Signature
+                )
+            };
+
+            var refreshTokenKey = Encoding.ASCII.GetBytes(_key);
+            var refreshTokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("id", user.Id),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
+                }),
+
+                Expires = DateTime.Now.AddMinutes(10),
+
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(refreshTokenKey),
+                    SecurityAlgorithms.HmacSha256Signature
+                )
+            };
+
+            var newRefreshToken = tokenHandler.CreateToken(refreshTokenDescriptor);
+            var newToken = tokenHandler.CreateToken(tokenDescriptor);
+
+            user.RefreshToken = tokenHandler.WriteToken(newRefreshToken);
+            _users.ReplaceOne(u => u.Id == user.Id, user);
+
+            return new LoggedUser() { Token = tokenHandler.WriteToken(newToken), RefreshToken = tokenHandler.WriteToken(newRefreshToken), Id = user.Id, Email = user.Email, Role = user.Role.ToString()};
         }
     }
 }

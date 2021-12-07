@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 namespace IdentityAPI.Models
 {
@@ -17,9 +13,12 @@ namespace IdentityAPI.Models
         public string Password { get; set; }
         [BsonElement("Role")]
         public Role Role { get; set; }
+        [BsonElement("RefreshToken")]
+        public string RefreshToken { get; set; }
     }
 
-    public enum Role{
+    public enum Role
+    {
         Admin,
         User,
         Owner

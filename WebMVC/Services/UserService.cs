@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,12 @@ namespace WebMVC.Services
     {
         private readonly HttpClient _apiClient;
         private readonly IHttpContextAccessor _accessor;
-
-        public UserService(HttpClient httpClient, IHttpContextAccessor accessor)
+        private readonly IServiceProvider _serviceProvider;
+        public UserService(HttpClient httpClient, IHttpContextAccessor accessor, IServiceProvider serviceProvider)
         {
             _apiClient = httpClient;
             _accessor = accessor;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<bool> CreateUserAsync(User user)
@@ -28,6 +30,18 @@ namespace WebMVC.Services
             var url = UrlsConfig.UserOperations.Create();
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync(url, content);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.PostAsync(url, content);
+                    }
+                }
+            }
 
             return response.StatusCode != HttpStatusCode.BadRequest;
         }
@@ -37,6 +51,19 @@ namespace WebMVC.Services
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.UserOperations.Delete(id);
             var response = await _apiClient.DeleteAsync(url);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.DeleteAsync(url);
+                    }
+                }
+            }
+
             return response.StatusCode == HttpStatusCode.OK;
         }
 
@@ -46,6 +73,20 @@ namespace WebMVC.Services
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.UserOperations.GetById(id);
             var response = await _apiClient.GetAsync(url);
+
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.GetAsync(url);
+                    }
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             var reservationResponse = await response.Content.ReadAsStringAsync();
@@ -62,6 +103,18 @@ namespace WebMVC.Services
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PutAsync(url, content);
 
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.PutAsync(url, content);
+                    }
+                }
+            }
+
             response.EnsureSuccessStatusCode();
 
             var userResponse = await response.Content.ReadAsStringAsync();
@@ -76,6 +129,18 @@ namespace WebMVC.Services
             _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
             var url = UrlsConfig.UserOperations.Get(email);
             var response = await _apiClient.GetAsync(url);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized && response.Headers.Contains("Token-Expired"))
+            {
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var authorizeService = scope.ServiceProvider.GetRequiredService<IAuthorizeService>();
+                    if (await authorizeService.RefreshToken())
+                    {
+                        response = await _apiClient.GetAsync(url);
+                    }
+                }
+            }
 
             response.EnsureSuccessStatusCode();
 

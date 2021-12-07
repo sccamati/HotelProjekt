@@ -46,6 +46,7 @@ namespace WebMVC.Config
         public class AuthorizeOperations
         {
             public static string LogIn() => $"https://localhost:44308/api/Identity/";
+            public static string RefreshToken(string token) => $"https://localhost:44308/api/Identity/{token}";
         }
     }
 }

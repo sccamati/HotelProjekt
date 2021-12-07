@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebMVC.Helper;
 using WebMVC.Models;
 using WebMVC.Services;
 
@@ -34,6 +35,10 @@ namespace WebMVC.Controllers
                 ViewBag.error = "failed to login try again";
                 return View();
             }
+
+            //save refresh token in local storage
+            RefreshTokenStorage.RefreshToken = u.RefreshToken;
+
             //Save token in session object
             _accessor.HttpContext.Session.SetString("JWToken", u.Token);
             _accessor.HttpContext.Session.SetString("ID", u.Id);
@@ -48,6 +53,8 @@ namespace WebMVC.Controllers
             _accessor.HttpContext.Session.Remove("JWToken");
             _accessor.HttpContext.Session.Remove("ID");
             _accessor.HttpContext.Session.Remove("Role");
+            _accessor.HttpContext.Session.Remove("Email");
+            RefreshTokenStorage.RefreshToken = "";
             return RedirectToAction("Index", "Home");
         }
     }

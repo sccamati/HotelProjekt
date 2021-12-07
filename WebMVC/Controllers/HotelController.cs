@@ -46,7 +46,7 @@ namespace WebMVC.Controllers
             hotel.OwnerID = _accessor.HttpContext.Session.GetString("ID");
 
             await _hotelService.CreateHotel(hotel);
-            
+
             return RedirectToAction("GetOwnerHotel", "Hotel", new { ownerId = _accessor.HttpContext.Session.GetString("ID") });
         }
         
@@ -110,6 +110,7 @@ namespace WebMVC.Controllers
             }
 
             var res = await _hotelService.DeleteHotel(id);
+                
             if (!res)
             {
                 return RedirectToAction("GetHotels");

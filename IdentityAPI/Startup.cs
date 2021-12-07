@@ -10,7 +10,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Steeltoe.Discovery.Client;
+using System;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace IdentityAPI
 {
@@ -43,8 +45,21 @@ namespace IdentityAPI
                {
                    ValidateIssuerSigningKey = true,
                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("SecretKey").Value)),
+                   ValidateLifetime = true,
                    ValidateIssuer = false,
-                   ValidateAudience = false
+                   ValidateAudience = false,
+                   ClockSkew = TimeSpan.Zero
+               };
+               x.Events = new JwtBearerEvents
+               {
+                   OnAuthenticationFailed = context =>
+                   {
+                       if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                       {
+                           context.Response.Headers.Add("Token-Expired", "true");
+                       }
+                       return Task.CompletedTask;
+                   }
                };
            });
 
