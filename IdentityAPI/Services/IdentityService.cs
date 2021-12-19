@@ -123,12 +123,12 @@ namespace IdentityAPI.Services
             var Id = tokenHandler.ReadJwtToken(token).Claims.First().Value;
             var user = _users.Find(u => u.Id == Id.ToString()).FirstOrDefault();
 
-            if(token != user.RefreshToken)
+            if (user == null)
             {
                 return null;
             }
 
-            if (user == null)
+            if (token != user.RefreshToken)
             {
                 return null;
             }
