@@ -26,7 +26,7 @@ namespace HotelAPI.Controllers
         public ActionResult<Hotel> CreateHotel(Hotel hotel)
         {
             var h = _service.CreateHotel(hotel);
-            return Ok(hotel);
+            return Ok(h);
         }
         [Authorize]
         [HttpPut]

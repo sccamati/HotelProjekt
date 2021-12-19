@@ -54,7 +54,7 @@ namespace IdentityAPI.Services
                     new Claim(ClaimTypes.Role, user.Role.ToString()),
                 }),
                 
-                Expires = DateTime.Now.AddSeconds(20),
+                Expires = DateTime.Now.AddMinutes(1),
 
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),
@@ -87,7 +87,7 @@ namespace IdentityAPI.Services
             user.RefreshToken = tokenHandler.WriteToken(refreshToken);
 
             _users.ReplaceOne(u => u.Id == user.Id, user);
-            var tokenExpire = tokenDescriptor.Expires;
+
             return new LoggedUser()
             {
                 Token = tokenHandler.WriteToken(token),
@@ -143,7 +143,7 @@ namespace IdentityAPI.Services
                     new Claim(ClaimTypes.Role, user.Role.ToString()),
                 }),
 
-                Expires = DateTime.Now.AddSeconds(50),
+                Expires = DateTime.Now.AddMinutes(5),
 
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey),

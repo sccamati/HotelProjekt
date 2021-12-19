@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebMVC.Helper;
 using WebMVC.Models;
 using WebMVC.Services;
 
@@ -41,12 +42,14 @@ namespace WebMVC.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateHotel(Hotel hotel)
         {
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            var user = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("Id"));
+
+            if (user == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
 
-            if(DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            if(user.ExpiresTime < DateTime.Now)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -66,12 +69,14 @@ namespace WebMVC.Controllers
         public async Task<ActionResult<Hotel>> UpdateHotel(Hotel hotel)
         {
 
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            var user = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+
+            if (user == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
 
-            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            if (user.ExpiresTime < DateTime.Now)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -93,12 +98,14 @@ namespace WebMVC.Controllers
         [HttpGet]
         public async Task<ActionResult> EditHotel(string id)
         {
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            var user = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+
+            if (user == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
 
-            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            if (user.ExpiresTime < DateTime.Now)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -124,12 +131,14 @@ namespace WebMVC.Controllers
         [HttpPost]
         public async Task<ActionResult> EditHotel(Hotel hotel)
         {
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            var user = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+
+            if (user == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
 
-            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            if (user.ExpiresTime < DateTime.Now)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -150,12 +159,14 @@ namespace WebMVC.Controllers
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult> DeleteHotel(string id)
         {
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            var user = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+
+            if (user == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
 
-            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            if (user.ExpiresTime < DateTime.Now)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -197,12 +208,14 @@ namespace WebMVC.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Hotel>>> GetOwnerHotel(string ownerId)
         {
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            var user = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+
+            if (user == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
 
-            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            if (user.ExpiresTime < DateTime.Now)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -234,12 +247,14 @@ namespace WebMVC.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateRoom(RoomHotelViewModel roomHotelViewModel)
         {
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            var user = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+
+            if (user == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
 
-            if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            if (user.ExpiresTime < DateTime.Now)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
@@ -265,12 +280,14 @@ namespace WebMVC.Controllers
 
         public async Task<ActionResult> DeleteRoom(string hotelId, string roomId)
         {
-            if (_accessor.HttpContext.Session.GetString("JWToken") == null)
+            var user = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+
+            if (user == null)
             {
                 return RedirectToAction("Index", "Authorize");
             }
 
-                        if (DateTime.Parse(_accessor.HttpContext.Session.GetString("ExpiresTime")) < DateTime.Now)
+            if (user.ExpiresTime < DateTime.Now)
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {

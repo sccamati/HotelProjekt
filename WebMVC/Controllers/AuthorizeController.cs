@@ -36,15 +36,22 @@ namespace WebMVC.Controllers
                 return View();
             }
 
-            //save refresh token in local storage
-            RefreshTokenStorage.RefreshToken = u.RefreshToken;
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Email == user.Email);
+            if(loggedUser == null)
+            {
+                UserStorage.users.Add(u);
+            }
+            else
+            {
+                loggedUser.RefreshToken = u.RefreshToken;
+                loggedUser.Token = u.Token;
+            }
+            
 
             //Save token in session object
-            _accessor.HttpContext.Session.SetString("JWToken", u.Token);
             _accessor.HttpContext.Session.SetString("ID", u.Id);
             _accessor.HttpContext.Session.SetString("Role", u.Role);
             _accessor.HttpContext.Session.SetString("Email", u.Email);
-            _accessor.HttpContext.Session.SetString("ExpiresTime", u.ExpiresTime.ToString());
 
             return RedirectToAction("Index", "Home");
         }
@@ -52,14 +59,12 @@ namespace WebMVC.Controllers
         [HttpGet]
         public ActionResult LogOut()
         {
-            _accessor.HttpContext.Session.Remove("JWToken");
+            var user = UserStorage.users.Single(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            UserStorage.users.Remove(user);
+
             _accessor.HttpContext.Session.Remove("ID");
             _accessor.HttpContext.Session.Remove("Role");
             _accessor.HttpContext.Session.Remove("Email");
-            _accessor.HttpContext.Session.Remove("ExpiresTime");
-
-            RefreshTokenStorage.RefreshToken = "";
-
             return RedirectToAction("Index", "Home");
         }
     }

@@ -34,20 +34,18 @@ namespace WebMVC.Services
             });
 
             
-            RefreshTokenStorage.RefreshToken = u.RefreshToken;
-
             if (response.StatusCode == HttpStatusCode.BadRequest)
             {
                 u.Token = "";
             }
+
             return u;
         }
 
         public async Task<bool> RefreshToken()
         {
-
-            var token = RefreshTokenStorage.RefreshToken;
-            var url = UrlsConfig.AuthorizeOperations.RefreshToken(token);
+            var user = UserStorage.users.Single(u => u.Id == _accessor.HttpContext.Session.GetString("Id"));
+            var url = UrlsConfig.AuthorizeOperations.RefreshToken(user.RefreshToken);
             var response = await _apiClient.GetAsync(url);
             var authResponse = await response.Content.ReadAsStringAsync();
             var u = JsonSerializer.Deserialize<LoggedUser>(authResponse, new JsonSerializerOptions
@@ -61,7 +59,8 @@ namespace WebMVC.Services
                 return false;
             }
 
-            RefreshTokenStorage.RefreshToken = u.RefreshToken;
+            user.RefreshToken = u.RefreshToken;
+            user.Token = u.Token;
 
             _accessor.HttpContext.Session.SetString("JWToken", u.Token);
             _accessor.HttpContext.Session.SetString("ID", u.Id);

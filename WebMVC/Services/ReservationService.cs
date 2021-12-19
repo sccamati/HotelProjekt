@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
+using WebMVC.Helper;
 
 namespace WebMVC.Services
 {
@@ -27,7 +28,8 @@ namespace WebMVC.Services
 
         public async Task<bool> CreateReservationAsync(Reservation reservation)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.ReservationOperations.Create();
             var content = new StringContent(JsonSerializer.Serialize(reservation), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync(url, content);
@@ -37,7 +39,8 @@ namespace WebMVC.Services
 
         public async Task<bool> DeleteReservationAsync(string id)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.ReservationOperations.Delete(id);
             var response = await _apiClient.DeleteAsync(url);
 
@@ -46,7 +49,8 @@ namespace WebMVC.Services
 
         public async Task<List<Reservation>> GetAllReservationsAsync()
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.ReservationOperations.Get();
             var response = await _apiClient.GetAsync(url);
 
@@ -61,7 +65,8 @@ namespace WebMVC.Services
 
         public async Task<List<Reservation>> GetOwnersReservations(string id)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var userId = id;
             var url = UrlsConfig.ReservationOperations.GetOwnersRes(userId);
             var response = await _apiClient.GetAsync(url);
@@ -77,7 +82,8 @@ namespace WebMVC.Services
 
         public async Task<Reservation> GetReservationAsync(string id)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.ReservationOperations.GetById(id);
             var response = await _apiClient.GetAsync(url);
 
@@ -92,7 +98,8 @@ namespace WebMVC.Services
 
         public async Task<List<Reservation>> GetUsersReservations()
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var userId = _accessor.HttpContext.Session.GetString("ID");
             var url = UrlsConfig.ReservationOperations.GetUsersRes(userId);
             var response = await _apiClient.GetAsync(url);
@@ -108,7 +115,8 @@ namespace WebMVC.Services
 
         public async Task<List<Reservation>> GetUsersReservations(string id)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var userId = id;
             var url = UrlsConfig.ReservationOperations.GetUsersRes(userId);
             var response = await _apiClient.GetAsync(url);
@@ -124,7 +132,8 @@ namespace WebMVC.Services
 
         public async Task<List<Reservation>> GetRoomsReservations(string hotelId, string roomId)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.ReservationOperations.GetRoomsRes(hotelId, roomId);
             var response = await _apiClient.GetAsync(url);
 

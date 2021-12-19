@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 using WebMVC.Config;
+using WebMVC.Helper;
 using WebMVC.Models;
 
 namespace WebMVC.Services
@@ -36,7 +37,8 @@ namespace WebMVC.Services
 
         public async Task<bool> DeleteUserAsync(string id)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.UserOperations.Delete(id);
             var response = await _apiClient.DeleteAsync(url);
 
@@ -46,7 +48,8 @@ namespace WebMVC.Services
         public async Task<User> GetUserAsync(string id)
         {
 
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.UserOperations.GetById(id);
             var response = await _apiClient.GetAsync(url);
 
@@ -61,7 +64,8 @@ namespace WebMVC.Services
 
         public async Task<User> UpdateUserAsync(User user)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.UserOperations.Update();
             var content = new StringContent(JsonSerializer.Serialize(user), System.Text.Encoding.UTF8, "application/json");
             var response = await _apiClient.PutAsync(url, content);
@@ -77,7 +81,8 @@ namespace WebMVC.Services
 
         public async Task<List<User>> GetUsersAsync(string email)
         {
-            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessor.HttpContext.Session.GetString("JWToken"));
+            var loggedUser = UserStorage.users.SingleOrDefault(u => u.Id == _accessor.HttpContext.Session.GetString("ID"));
+            _apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loggedUser.Token);
             var url = UrlsConfig.UserOperations.Get(email);
             var response = await _apiClient.GetAsync(url);
 
