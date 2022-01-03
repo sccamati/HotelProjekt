@@ -16,9 +16,12 @@ namespace WebMVC.Services
     {
         private readonly HttpClient _apiClient;
         private readonly IHttpContextAccessor _accessor;
+
         public AuthorizeService(HttpClient httpClient, IHttpContextAccessor accessor)
         {
-            _apiClient = httpClient;
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+            _apiClient = new HttpClient(clientHandler);
             _accessor = accessor;
         }
 

@@ -29,7 +29,6 @@ namespace HotelAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddDiscoveryClient(Configuration);
             services.AddControllers();
             services.AddAuthentication(s =>
             {
@@ -72,7 +71,6 @@ namespace HotelAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseDiscoveryClient();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
